@@ -38,11 +38,10 @@ The following tools need to be installed on your system prior to deploy VMix:
 ### Setup
 1. First thing to do is to configure AWS Cli.  
 For it a role from the aws account that will be used to deploy is needed. Also, an Access Key and Secret Key.  
-How to create it:  
-So, run the following command to configure it.  
+To create run the following command to configure it.  
 And input the Access Key and Secret Key IDs:  
     ```bash
-    aws configure --profile vmix
+    aws configure
     ```
     Something like this:  
     ```bash
@@ -57,7 +56,7 @@ And input the Access Key and Secret Key IDs:
     The account ID can be checked on aws console top-right menu.  
     ```
     [profile vmix]
-    role_arn = arn:aws:iam::[account-id-here]:role/TrackitRole
+    role_arn = arn:aws:iam::[account-id-here]:role/deploy_vmix_role
     source_profile = default
     ```  
 2. 
