@@ -11,16 +11,20 @@ The following steps describe how to deploy a vMix environment using terraform.
 Read more about vMix here: https://www.vmix.com/software/  
 It will deploy the following resources and applications:  
 
-- VPC
-- 4 subnets (2 private and 2 public)
-- 1 NAT Gateway
-- Security Group Rules
-- IAM Roles
-- EC2 Instance g4dn.2xlarge with:
-    - Nice DCV
-    - NVIDIA GRID Driver
-    - NDI
-    - vMix
+- 1 vpc  
+- 2 public subnets  
+- 2 private subnets  
+- 1 nat gateway  
+- 1 elastic ip  
+- 1 chave privada  
+- 1 aws key pairs  
+- 1 security group  
+- 1 iam role  
+- 1 ec2 Instance g4dn.2xlarge with:  
+  > Nice DCV  
+  > NVIDIA GRID Driver  
+  > NDI  
+  > vMix
 
 ---
 ### Prerequisites
@@ -36,7 +40,13 @@ The following tools need to be installed on your system prior to deploy VMix:
 
 ---
 ### Setup
-1. First thing to do is to configure AWS Cli.  
+1. Firstly, create an role with the following AWS managed policies:  
+    AmazonVPCFullAccess  
+    EC2PowerUser
+   As you are already on the web console, note the aws account ID number. It is showed at top right dropdown menu.  
+
+
+2. Now it's time to configure AWS Cli.  
 For it a role from the aws account that will be used to deploy is needed. Also, an Access Key and Secret Key.  
 To create run the following command to configure it.  
 And input the Access Key and Secret Key IDs:  
@@ -53,7 +63,7 @@ And input the Access Key and Secret Key IDs:
     ```
     Now let's create a new profile named vmix to use a specific role with due permissions.  
     Add to the file ``~/.aws/config`` the text bellow replacing ``[account-id-here]`` for your account ID.  
-    The account ID can be checked on aws console top-right menu.  
+    The account ID can be checked on aws console top-right dropdown menu.  
     ```
     [profile vmix]
     role_arn = arn:aws:iam::[account-id-here]:role/deploy_vmix_role

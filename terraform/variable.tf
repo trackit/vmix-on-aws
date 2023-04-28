@@ -7,7 +7,7 @@ variable "allowed_account_ids" {
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
-  default     = ""
+  default     = "vmix"
 }
 
 variable "cidr" {
@@ -41,7 +41,7 @@ variable "instance_type" {
 }
 
 variable "ami" {
-  description = "The EC2 instance type"
+  description = "The EC2 instance AMI"
   type        = string
   default     = ""
 }
