@@ -35,6 +35,15 @@ resource "aws_security_group" "vmix" {
     # cidr_blocks      = ["${chomp(data.http.myip4.response_body)}/32"]
   }
 
+  ingress {
+    description = "Ansible Connection"
+    from_port   = 5986
+    to_port     = 5986
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    # cidr_blocks      = ["${chomp(data.http.myip4.response_body)}/32"]
+  }
+
   egress {
     from_port        = 0
     to_port          = 0

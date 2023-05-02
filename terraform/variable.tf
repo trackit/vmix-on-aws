@@ -4,6 +4,12 @@ variable "allowed_account_ids" {
   default     = []
 }
 
+variable "region" {
+  description = "Name to be used on all the resources as identifier"
+  type        = string
+  default     = "us-west-1"
+}
+
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
@@ -13,7 +19,7 @@ variable "name" {
 variable "cidr" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overriden"
   type        = string
-  default     = "0.0.0.0/0"
+  default     = "10.20.0.0/16"
 }
 
 variable "azs" {
@@ -43,5 +49,5 @@ variable "instance_type" {
 variable "ami" {
   description = "The EC2 instance AMI"
   type        = string
-  default     = ""
+  default     = "ami-05e6d59d866d538f0"
 }

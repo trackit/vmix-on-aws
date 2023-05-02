@@ -7,7 +7,7 @@ resource "aws_instance" "vmix" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.vmix-instance.id
   vpc_security_group_ids      = [aws_security_group.vmix.id]
-  get_password_data           = "true"
+  # get_password_data           = "true"
 
   ebs_block_device {
     device_name = "/dev/sda1"
@@ -15,10 +15,30 @@ resource "aws_instance" "vmix" {
     volume_type = "gp3"
   }
 
-  user_data = file("dcv.ps1")
+  # user_data = "${file("dcv.ps1")}"
+
+  # connection {
+  #   host     = "${self.public_ip}"
+  #   port     = 5986
+  #   type     = "winrm"
+  #   user     = "Administrator"
+  #   password = "${rsadecrypt(aws_instance.vmix.password_data, tls_private_key.vmix-key.private_key_pem)}"
+  # }
+
+  # provisioner "file" {
+  #   source      = "./dcv.ps1"
+  #   destination = "C:\\Users\\Administrator\\Desktop\\dcv.ps1"
+  # }
+
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "powershell.exe -ExecutionPolicy Unrestricted -File C:\\Users\\Administrator\\Desktop\\dcv.ps1"
+  #   ]
+  # }
 
   tags = {
     Terraform = "true"
     Name      = "vmix"
   }
 }
+

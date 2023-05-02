@@ -17,7 +17,7 @@ It will deploy the following resources and applications:
 - 1 nat gateway  
 - 1 elastic ip  
 - 1 chave privada  
-- 1 aws key pairs  
+- 1 aws key pair  
 - 1 security group  
 - 1 iam role  
 - 1 ec2 Instance g4dn.2xlarge with:  
@@ -31,24 +31,31 @@ It will deploy the following resources and applications:
 
 The following tools need to be installed on your system prior to deploy VMix:
 - AWS CLI;
-    - Installation instructions: 
-- Git;
+    - Installation instructions:  
+    https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html  
+- Git;  
+    - Installation instructions:  
+    https://git-scm.com/book/en/v2/Getting-Started-Installing-Git  
 - Terraform;
     - Installation instructions: 
+    https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
 - Nice DCV Client;
-    - Installer: 
+    - Installer:  
+    https://download.nice-dcv.com/  
 
 ---
 ### Setup
-1. Firstly, create an role with the following AWS managed policies:  
+1. Firstly, create an role named ``deploy_vmix_role`` with the following AWS managed policies:  
     AmazonVPCFullAccess  
-    EC2PowerUser
+    EC2PowerUser  
    As you are already on the web console, note the aws account ID number. It is showed at top right dropdown menu.  
 
 
 2. Now it's time to configure AWS Cli.  
-For it a role from the aws account that will be used to deploy is needed. Also, an Access Key and Secret Key.  
-To create run the following command to configure it.  
+You will need an Access Key and Secret Key.  
+Create it from the console following this guide:  
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey    
+Run the following command to configure AWS CLI.  
 And input the Access Key and Secret Key IDs:  
     ```bash
     aws configure
