@@ -77,6 +77,12 @@ And input the Access Key and Secret Key IDs:
     source_profile = default
     ```  
 2. 
+cd terraform && \
+	terraform init && \
+	terraform plan -out=plan.out && \
+	terraform apply plan.out && \
+	aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile msolution --region us-west-1 | jq -r '.PasswordData'
+
 
 
 ---

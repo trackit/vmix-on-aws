@@ -7,7 +7,7 @@ resource "aws_instance" "vmix" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.vmix-instance.id
   vpc_security_group_ids      = [aws_security_group.vmix.id]
-  # get_password_data           = "true"
+  get_password_data           = "true"
 
   ebs_block_device {
     device_name = "/dev/sda1"
