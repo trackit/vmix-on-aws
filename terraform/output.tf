@@ -10,5 +10,5 @@ output "vmix_instance_id" {
 
 output "private_key" {
   description = "EC2 Private Key File"
-  value     = "Use the file vmix.pem"
+  value       = "Use the file vmix.pem"
 }

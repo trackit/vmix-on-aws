@@ -4,10 +4,16 @@ variable "allowed_account_ids" {
   default     = []
 }
 
-variable "region" {
+variable "aws_region" {
   description = "Name to be used on all the resources as identifier"
   type        = string
   default     = "us-west-1"
+}
+
+variable "aws_profile" {
+  description = "Local profile to use with aws cli"
+  type        = string
+  default     = ""
 }
 
 variable "name" {
@@ -19,7 +25,7 @@ variable "name" {
 variable "cidr" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overriden"
   type        = string
-  default     = "10.20.0.0/16"
+  default     = "10.0.0.0/16"
 }
 
 variable "azs" {

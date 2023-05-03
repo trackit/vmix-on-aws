@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ssm_role_for_ec2" {
-  name = "ssm_role_for_ec2"
+  name = "ssm_role_for_ec2_${var.name}"
 
   assume_role_policy = jsonencode(
     {
@@ -70,12 +70,12 @@ resource "aws_iam_role" "ssm_role_for_ec2" {
   }
 
   tags = {
-    Name = "ssm_role_ec2"
+    Name = "ssm_role_ec2_${var.name}"
   }
 }
 
-resource "aws_iam_instance_profile" "ssm_role_for_ec2" {
-  name = "ssm_role_for_ec2"
+resource "aws_iam_instance_profile" "ssm_instance_profile_for_ec2" {
+  name = "ssm_role_for_ec2_${var.name}"
   role = aws_iam_role.ssm_role_for_ec2.id
 }
 
