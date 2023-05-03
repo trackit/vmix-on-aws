@@ -4,10 +4,16 @@ variable "allowed_account_ids" {
   default     = []
 }
 
-variable "region" {
+variable "aws_region" {
   description = "Name to be used on all the resources as identifier"
   type        = string
   default     = "us-west-1"
+}
+
+variable "aws_profile" {
+  description = "Local profile to use with aws cli"
+  type        = string
+  default     = ""
 }
 
 variable "name" {
