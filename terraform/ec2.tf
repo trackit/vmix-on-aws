@@ -1,7 +1,7 @@
 resource "aws_instance" "vmix" {
   ami                  = var.ami #Amazon Linux 2 AMI Win Server 2019 with NVIDIA GRID
   instance_type        = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.ssm_role_for_ec2.name
+  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile_for_ec2.name
   # iam_instance_profile        = aws_iam_role.ssm_role_for_ec2.id #IAM Role to attach to the instance
   subnet_id                   = module.vpc.public_subnets[0] #The first public subnet created by the module
   associate_public_ip_address = true

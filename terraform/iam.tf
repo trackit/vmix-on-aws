@@ -41,7 +41,7 @@ resource "aws_iam_role" "ssm_role_for_ec2" {
             "ssm:UpdateInstanceAssociationStatus",
             "ssm:UpdateInstanceInformation"
           ],
-          "Resource" : aws_instance.vmix.arn
+          "Resource" : "*"
         },
         {
           "Effect" : "Allow",
@@ -51,7 +51,7 @@ resource "aws_iam_role" "ssm_role_for_ec2" {
             "ssmmessages:OpenControlChannel",
             "ssmmessages:OpenDataChannel"
           ],
-          "Resource" : aws_instance.vmix.arn
+          "Resource" : "*"
         },
         {
           "Effect" : "Allow",
@@ -63,7 +63,7 @@ resource "aws_iam_role" "ssm_role_for_ec2" {
             "ec2messages:GetMessages",
             "ec2messages:SendReply"
           ],
-          "Resource" : aws_instance.vmix.arn
+          "Resource" : "*"
         }
       ]
     })
@@ -74,7 +74,7 @@ resource "aws_iam_role" "ssm_role_for_ec2" {
   }
 }
 
-resource "aws_iam_instance_profile" "ssm_role_for_ec2" {
+resource "aws_iam_instance_profile" "ssm_instance_profile_for_ec2" {
   name = "ssm_role_for_ec2_${var.name}"
   role = aws_iam_role.ssm_role_for_ec2.id
 }
