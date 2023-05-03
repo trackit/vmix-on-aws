@@ -38,7 +38,7 @@ resource "aws_instance" "vmix" {
 
   tags = {
     Terraform = "true"
-    Name      = "vmix"
+    Name      = var.name
   }
 }
 

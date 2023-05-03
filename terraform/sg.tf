@@ -4,7 +4,7 @@ data "http" "myip4" {
 }
 
 resource "aws_security_group" "vmix" {
-  name        = "vmix"
+  name        = "${var.name}_sg"
   description = "Allow RDP inbound traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -50,9 +50,5 @@ resource "aws_security_group" "vmix" {
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = {
-    Name = "vmix"
   }
 }
