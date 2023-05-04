@@ -24,6 +24,7 @@ Running vMix software on the cloud
     </li>
   </ol>
 </details>
+<br/>
 
 ## Getting started
 
