@@ -1,13 +1,31 @@
-<p align="center" style="">
-<img src="vmix-aws.png" width="120" alt="vmix-aws"/>
-</p>
-<h1 style="margin: 0;padding: 0;text-align: center">vMix on AWS</h1>
+<div align="center">
+    <img src="vmix-aws.png" width="120" height="120" alt="vmix-aws"/>
+</div>
 
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Setup](#setup)
-    - [Deploy](#deploy)
-- [References](#references)
+<h3 align="center">vMix on AWS</h3>
+
+<p align="center">
+Running vMix software on the cloud
+</p>
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#getting-started">Getting started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#setup">Setup</a></li>
+        <li><a href="#deploy">Deploy</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#references">References</a>
+    </li>
+  </ol>
+</details>
+
+
 ---
 ## Getting started
 
