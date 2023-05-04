@@ -13,7 +13,7 @@ variable "aws_region" {
 variable "aws_profile" {
   description = "Local profile to use with aws cli"
   type        = string
-  default     = ""
+  default     = "vmix"
 }
 
 variable "name" {
