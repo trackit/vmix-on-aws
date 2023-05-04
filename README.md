@@ -1,4 +1,7 @@
-# vMix Deployment
+<p align="center" style="">
+<img src="vmix-aws.png" width="120" alt="vmix-aws"/>
+</p>
+<h1 style="margin: 0;padding: 0;text-align: center">vMix on AWS</h1>
 
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -12,16 +15,19 @@ The following steps describe how to deploy a vMix environment using terraform.
 Read more about vMix here: https://www.vmix.com/software/  
 It will deploy the following resources and applications:  
 
-- 1 vpc  
-- 2 public subnets  
-- 2 private subnets  
-- 2 nat gateway  
-- 2 elastic ip  
-- 1 chave privada  
-- 1 aws key pair  
-- 1 security group  
-- 1 iam role  
-- 1 ec2 Instance g4dn.2xlarge with:  
+#### Network
+- 1 VPC  
+- 2 Public Subnets  
+- 2 Private Subnets  
+- 2 NAT Gateway  
+- 2 Elastic IPs
+- 1 Security Group
+#### IAM
+- 1 Role
+#### EC2
+- 1 Private Key  
+- 1 AWS Key Pair
+- 1 EC2 **g4dn.2xlarge** instance  with:  
   > Nice DCV  
   > NVIDIA GRID Driver  
   > NDI  
