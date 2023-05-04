@@ -45,3 +45,6 @@ plan.out
 #IDEs and code editors
 .idea
 .vscode
+
+# Ignore some json file due sensitive data
+trust-policy.json
