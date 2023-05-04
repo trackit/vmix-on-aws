@@ -25,8 +25,6 @@ Running vMix software on the cloud
   </ol>
 </details>
 
-
----
 ## Getting started
 
 The following steps describe how to deploy a vMix environment using terraform.  
