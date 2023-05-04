@@ -144,7 +144,8 @@ ___
 
 ### Deploy
 
-The infrastructure has some variables with default values (such as aws region and instance type) that can be changed through a .tfvars file.
+The infrastructure has some variables with default values (such as aws region and instance type) that can be changed
+through a .tfvars file.
 
 1. copy the
    `terraform.tfvars.example` file and add it to a `terraform.tfvars` file in the root of the `terraform` folder.
@@ -161,6 +162,7 @@ cd terraform && \
 	terraform apply plan.out && \
 	aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix --region us-west-1 | jq -r '.PasswordData'
 ```
+
 <br/>
 
 **To destroy it:**
