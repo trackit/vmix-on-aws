@@ -152,7 +152,7 @@ The infrastructure has some variables with default values (such as aws region an
 
 <br/>
 
-To create the infrastructure:
+**To create the infrastructure:**
 
 ```bash
 cd terraform && \
@@ -163,7 +163,7 @@ cd terraform && \
 ```
 <br/>
 
-To destroy it:
+**To destroy it:**
 
 ```bash
 terraform plan -destroy -out plan.out && \
