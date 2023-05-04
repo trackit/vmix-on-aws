@@ -120,8 +120,7 @@ https://docs.github.com/en/repositories/creating-and-managing-repositories/cloni
     ```bash
     aws iam create-role --role-name deploy-vmix-role --assume-role-policy-document file://trust-policy.json && \
         aws iam create-policy --policy-name EC2Access --policy-document file://policies.json && \
-        aws iam attach-role-policy --policy-arn arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:policy/EC2Access --role-name deploy-vmix-role && \
-        aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonVPCFullAccess --role-name deploy-vmix-role
+        aws iam attach-role-policy --policy-arn arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:policy/EC2Access --role-name deploy-vmix-role
     ```
 
 2. Now it's time to configure a profile for AWS CLI using the role.  
