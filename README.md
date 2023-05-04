@@ -148,7 +148,7 @@ terraform plan -destroy -out plan.out && \
 ```
 
 ---
-### References ###
+## References 
 https://www.vmix.com/software/  
 https://aws.amazon.com/blogs/media/live-video-production-using-vmix-on-amazon-ec2/  
 https://docs.aws.amazon.com/dcv/latest/adminguide/what-is-dcv.html  
