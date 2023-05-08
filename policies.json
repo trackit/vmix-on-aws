@@ -7,6 +7,8 @@
                 "ec2:CreateTags",
                 "ec2:DeleteKeyPair",
                 "ec2:DescribeAddresses",
+                "ec2:DescribeFastLaunchImages",
+                "ec2:DescribeImages",
                 "ec2:DescribeInstanceTypes",
                 "ec2:DescribeInstances",
                 "ec2:DescribeInternetGateways",
@@ -25,6 +27,15 @@
                 "ec2:DisassociateAddress",
                 "ec2:DisassociateRouteTable",
                 "ec2:ReleaseAddress",
+                "iam:GetAccountSummary",
+                "iam:ListAccountAliases",
+                "iam:ListGroups",
+                "iam:ListMFADevices",
+                "iam:ListOpenIDConnectProviders",
+                "iam:ListPolicies",
+                "iam:ListRoles",
+                "iam:ListSAMLProviders",
+                "iam:ListUsers",
                 "sts:GetCallerIdentity"
             ],
             "Resource": "*"
@@ -39,7 +50,9 @@
             "Action": [
                 "ec2:DescribeInstanceAttribute",
                 "ec2:GetPasswordData",
-                "ec2:RunInstances"
+                "ec2:ModifyInstanceAttribute",
+                "ec2:RunInstances",
+                "ec2:TerminateInstances"
             ],
             "Resource": "*"
         },
@@ -126,32 +139,22 @@
         },
         {
             "Effect": "Allow",
-            "Action": "ec2:RunInstances",
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
             "Action": [
-                "ec2:DescribeRegions",
-                "iam:GetAccountPasswordPolicy",
-                "iam:GetAccountSummary",
-                "iam:GetServiceLastAccessedDetails",
-                "iam:ListAccountAliases",
-                "iam:ListGroups",
-                "iam:ListMFADevices",
-                "iam:ListOpenIDConnectProviders",
-                "iam:ListPolicies",
-                "iam:ListRoles",
-                "iam:ListSAMLProviders",
-                "iam:ListUsers",
-                "s3:ListAllMyBuckets"
+                "ec2:CopyImage",
+                "ec2:DeregisterImage",
+                "ec2:DescribeImageAttribute",
+                "ec2:RunInstances"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
+            "Action": "ec2:DeleteSnapshot",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
             "Action": [
-                "iam:GenerateServiceLastAccessedDetails",
                 "iam:ListAttachedGroupPolicies",
                 "iam:ListGroupPolicies"
             ],
@@ -162,15 +165,9 @@
             "Action": [
                 "iam:AddRoleToInstanceProfile",
                 "iam:CreateInstanceProfile",
-                "iam:GetInstanceProfile"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:GenerateServiceLastAccessedDetails",
-                "iam:GetPolicy"
+                "iam:DeleteInstanceProfile",
+                "iam:GetInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile"
             ],
             "Resource": "*"
         },
@@ -180,8 +177,6 @@
                 "iam:CreateRole",
                 "iam:DeleteRole",
                 "iam:DeleteRolePolicy",
-                "iam:DeleteInstanceProfile",
-                "iam:GenerateServiceLastAccessedDetails",
                 "iam:GetRole",
                 "iam:GetRolePolicy",
                 "iam:ListAttachedRolePolicies",
@@ -197,17 +192,14 @@
         {
             "Effect": "Allow",
             "Action": [
-                "iam:GenerateServiceLastAccessedDetails",
                 "iam:GetAccessKeyLastUsed",
                 "iam:GetLoginProfile",
                 "iam:GetUser",
                 "iam:ListAccessKeys",
                 "iam:ListAttachedUserPolicies",
                 "iam:ListGroupsForUser",
-                "iam:ListSigningCertificates",
                 "iam:ListUserPolicies",
-                "iam:ListUserTags",
-                "iam:RemoveRoleFromInstanceProfile"
+                "iam:ListUserTags"
             ],
             "Resource": "*"
         }

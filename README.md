@@ -159,7 +159,7 @@ cd terraform && \
 	terraform init && \
 	terraform plan -out=plan.out && \
 	terraform apply plan.out && \
-	aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix --region us-west-1 | jq -r '.PasswordData'
+	echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix --region us-west-1 | jq -r '.PasswordData')"
 ```
 
 <br/>
