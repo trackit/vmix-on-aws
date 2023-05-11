@@ -26,39 +26,35 @@ Running vMix software on the cloud
 </details>
 <br/>
 
-## Getting started
+# Getting started
 
 The following steps describe how to deploy a vMix environment using terraform.  
 Read more about vMix here: https://www.vmix.com/software/  
 It will deploy the following resources and applications:
 
-#### Network
+### Network
+> 1 VPC <br/>
+> 2 Public Subnets <br/>
+> 2 Private Subnets <br/>
+> 2 NAT Gateway <br/>
+> 2 Elastic IPs <br/>
+> 1 Security Group <br/>
 
-- 1 VPC
-- 2 Public Subnets
-- 2 Private Subnets
-- 2 NAT Gateway
-- 2 Elastic IPs
-- 1 Security Group
+### IAM
 
-#### IAM
+> 1 Role
 
-- 1 Role
+### EC2
+> 1 Private Key <br/>
+> 1 AWS Key Pair <br/>
+> 1 EC2 **g4dn.2xlarge** instance with:
+>> Nice DCV  
+>> NVIDIA GRID Driver  
+>> NDI  
+>> vMix
+>> Sample Audio/Video files
 
-#### EC2
-
-- 1 Private Key
-- 1 AWS Key Pair
-- 1 EC2 **g4dn.2xlarge** instance with:
-  > Nice DCV  
-  > NVIDIA GRID Driver  
-  > NDI  
-  > vMix
-  > Sample Audio/Video files
-
----
-
-### Prerequisites
+## Prerequisites
 
 The following tools need to be installed on your system prior to deploy VMix:
 
@@ -83,9 +79,7 @@ The following tools need to be installed on your system prior to deploy VMix:
   If you don't have an Administrative user yet, besides the root user, just walkthrough this guide:  
   https://docs.aws.amazon.com/singlesignon/latest/userguide/getting-started.html
 
----
-
-### Setup
+## Setup
 
 To start, clone this repository using git.  
 Then, follow the steps always on the repository root folder.  
@@ -139,9 +133,7 @@ https://docs.github.com/en/repositories/creating-and-managing-repositories/cloni
    For more information about using roles with aws cli read it
    here:  https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html
 
-___
-
-### Deploy
+## Deploy
 
 The infrastructure has some variables with default values (such as aws region and instance type) that can be changed
 through a .tfvars file.
