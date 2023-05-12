@@ -154,7 +154,8 @@ through a .tfvars file.
 
 1. copy the
    `terraform.tfvars.example` file and add it to a `terraform.tfvars` file in the root of the `terraform` folder.
-2. You can modify the variables in the file to change the behavior of the infrastructure before deploying it.
+2. You need to input the values for the variables ``cidr``, ``azs``, ``private_subnets``, ``public_subnets``, and ``aws_region``.  
+If not ``terraform apply`` will fail.
 
 <br/>
 
