@@ -5,6 +5,6 @@ resource "aws_ami_copy" "vmix" {
   source_ami_region = "us-west-1"
 
   tags = {
-    Name = "vmix"
+    Name = var.name
   }
 }
