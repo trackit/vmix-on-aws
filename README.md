@@ -30,15 +30,15 @@ Running vMix software on the cloud
 
 The following steps describe how to deploy a vMix environment using terraform.  
 Read more about vMix here: https://www.vmix.com/software/  
-It will deploy the following resources and applications:
+It will deploy the following resources and applications (default):
 
 #### Network
 
 - 1 VPC
-- 2 Public Subnets
-- 2 Private Subnets
-- 2 NAT Gateway
-- 2 Elastic IPs
+- 2 Public Subnets*
+- 2 Private Subnets*
+- 2 NAT Gateway*
+- 2 Elastic IPs*
 - 1 Security Group
 
 #### IAM
@@ -49,12 +49,17 @@ It will deploy the following resources and applications:
 
 - 1 Private Key
 - 1 AWS Key Pair
+- 1 AMI
 - 1 EC2 **g4dn.2xlarge** instance with:
   > Nice DCV  
   > NVIDIA GRID Driver  
   > NDI  
   > vMix
   > Sample Audio/Video files
+
+
+*Those resource will depend on how many subnets you want to your infrastructure.  
+The guide assumes 2 subnets are enough. Though you can change it setting the ``private_subnets`` and ``public_subnets`` var values.  
 
 ---
 
@@ -69,7 +74,8 @@ The following tools need to be installed on your system prior to deploy VMix:
     - Installation instructions:  
       https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 - jq (json processor):
-    - Installer: https://stedolan.github.io/jq/download/
+    - Installer: 
+      https://stedolan.github.io/jq/download/
 - Git;
     - Installation instructions:  
       https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
@@ -124,14 +130,14 @@ https://docs.github.com/en/repositories/creating-and-managing-repositories/cloni
     ```
 
 2. Now it's time to configure a profile for AWS CLI using the role.  
-   Add to the file ``~/.aws/credentials`` the following.  
-   Here the ``{YOUR-AWS-ACCOUNT-ID}`` replacement is also necessary, and replace the {AWS-REGION} to the one desired to
+   Add to the file ``~/.aws/credentials`` the new role just created as a new profile.  
+   Here the ``{YOUR-AWS-ACCOUNT-ID}`` replacement is also necessary, and replace the ``{AWS-REGION}`` to the one desired to
    deploy the resources:
     ```bash
-    [vmix]
+    echo "[vmix]
     role_arn = arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:role/deploy-vmix-role
     source_profile = default
-    region = {AWS-REGION}
+    region = {AWS-REGION}" >> ~/.aws/credentials
     ```
 
    If your access and secret keys are on another profile than the ``default profile`` change the ``source_profile``
@@ -159,7 +165,7 @@ cd terraform && \
 	terraform init && \
 	terraform plan -out=plan.out && \
 	terraform apply plan.out && \
-	echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix --region us-west-1 | jq -r '.PasswordData')"
+	echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
 ```
 
 <br/>

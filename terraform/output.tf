@@ -4,7 +4,7 @@ output "vmix_server_name" {
 }
 
 output "vmix_instance_id" {
-  description = "EC2 DNS Name"
+  description = "EC2 Instance ID"
   value       = aws_instance.vmix.id
 }
 
