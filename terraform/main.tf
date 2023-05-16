@@ -26,11 +26,13 @@ module "vpc" {
 }
 
 resource "aws_eip" "nat" {
-  count = 2 # Because will be using only one NAT Gateway
+  # count = 2 # Because will be using only one NAT Gateway
+
+  count = "${length(var.private_subnets)}"
 
   vpc = true
 
   tags = {
-    Name = "vmix-nat-gateway"
+    Name = var.name
   }
 }
