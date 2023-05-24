@@ -147,7 +147,19 @@ through a .tfvars file.
 1. copy the
    `terraform.tfvars.example` file and add it to a `terraform.tfvars` file in the root of the `terraform` folder.
 2. You need to input the values for the variables ``cidr``, ``azs``, ``private_subnets``, ``public_subnets``, and ``aws_region``.  
-If not ``terraform apply`` will fail.
+If not ``terraform apply`` will fail.  
+Example:
+    ```yaml
+    cidr = "10.20.0.0/16"
+
+    azs = ["us-west-2a", "us-west-2c"]
+
+    private_subnets = ["10.20.11.0/24", "10.20.12.0/24"]
+
+    public_subnets = ["10.20.101.0/24", "10.20.102.0/24"]
+
+    aws_region = "us-west-2"
+    ```
 
 <br/>
 
@@ -222,4 +234,6 @@ https://www.vmix.com/software/
 https://aws.amazon.com/blogs/media/live-video-production-using-vmix-on-amazon-ec2/  
 https://docs.aws.amazon.com/dcv/latest/adminguide/what-is-dcv.html  
 https://www.bensound.com/  
-https://www.pexels.com/videos/-----
+https://www.pexels.com/videos/
+
+-----
