@@ -119,8 +119,8 @@ https://docs.github.com/en/repositories/creating-and-managing-repositories/cloni
    Now, you need to run these commands. Remember to replace ``{YOUR-AWS-ACCOUNT-ID}``:
     ```bash
     aws iam create-role --role-name deploy-vmix-role --assume-role-policy-document file://trust-policy.json && \
-        aws iam create-policy --policy-name EC2Access --policy-document file://policies.json && \
-        aws iam attach-role-policy --policy-arn arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:policy/EC2Access --role-name deploy-vmix-role
+        aws iam create-policy --policy-name EC2VmixAccess --policy-document file://policies.json && \
+        aws iam attach-role-policy --policy-arn arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:policy/EC2VmixAccess --role-name deploy-vmix-role
     ```
 
 2. Now it's time to configure a profile for AWS CLI using the role.  
@@ -169,8 +169,12 @@ Example:
 cd terraform && \
 	terraform init && \
 	terraform plan -out=plan.out && \
-	terraform apply plan.out && \
-	echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
+	terraform apply plan.out
+```
+
+to get the instance windows password you can replace the {AWS-PROFILE} variable and run the following command:
+```bash
+echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id) --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
 ```
 
 <br/>

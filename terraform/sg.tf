@@ -45,10 +45,19 @@ resource "aws_security_group" "vmix" {
   }
 
   ingress {
-    description = "NDI Tools Bridge"
+    description = "NDI Tools Bridge TCP"
     from_port   = 5990
     to_port     = 5990
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    # cidr_blocks      = ["${chomp(data.http.myip4.response_body)}/32"]
+  }
+
+  ingress {
+    description = "NDI Tools Bridge UDP"
+    from_port   = 5990
+    to_port     = 5990
+    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
     # cidr_blocks      = ["${chomp(data.http.myip4.response_body)}/32"]
   }
