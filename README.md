@@ -17,6 +17,7 @@ Running vMix software on the cloud
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#setup">Setup</a></li>
         <li><a href="#deploy">Deploy</a></li>
+        <li><a href="#advancedsetup">Advanced Setup</a></li>
       </ul>
     </li>
     <li>
@@ -119,8 +120,8 @@ https://docs.github.com/en/repositories/creating-and-managing-repositories/cloni
    Now, you need to run these commands. Remember to replace ``{YOUR-AWS-ACCOUNT-ID}``:
     ```bash
     aws iam create-role --role-name deploy-vmix-role --assume-role-policy-document file://trust-policy.json && \
-        aws iam create-policy --policy-name EC2Access --policy-document file://policies.json && \
-        aws iam attach-role-policy --policy-arn arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:policy/EC2Access --role-name deploy-vmix-role
+        aws iam create-policy --policy-name EC2VmixAccess --policy-document file://policies.json && \
+        aws iam attach-role-policy --policy-arn arn:aws:iam::{YOUR-AWS-ACCOUNT-ID}:policy/EC2VmixAccess --role-name deploy-vmix-role
     ```
 
 2. Now it's time to configure a profile for AWS CLI using the role.  
@@ -169,8 +170,12 @@ Example:
 cd terraform && \
 	terraform init && \
 	terraform plan -out=plan.out && \
-	terraform apply plan.out && \
-	echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
+	terraform apply plan.out
+```
+
+to get the instance windows password you can replace the {AWS-PROFILE} variable and run the following command:
+```bash
+echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id) --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
 ```
 
 <br/>
@@ -180,6 +185,44 @@ cd terraform && \
 ```bash
 terraform plan -destroy -out plan.out && \
     terraform apply plan.out
+```
+---
+## Advanced Setup
+
+This section describe what's needed to run vMix with AWS Live streaming solutions resources.  
+We are going to use a terraform module also created by TrackIt. It'll deploy the following resources:  
+
+
+You need to have a MediaLive Input Security Group.  
+To create it with open rule to everyone:  
+```bash
+aws medialive create-input-security-group --region us-west-2 --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
+```
+
+It will output the Input Security Group ID.  
+Note it somewhere because we will need it in a moment.  
+If you need to destroy it afterwards:  
+```bash
+aws medialive delete-input-security-group --region us-west-2 --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
+```
+
+First you need to create the necessary files for the API that will control the AWS Media Live.  
+You just need to run it on the root repository:  
+```bash
+mkdir live-streaming-api && \
+  cd live-streaming-api && \
+  curl https://codeload.github.com/trackit/aws-workflow-live-streaming/tar.gz/master | \
+  tar -xz --strip=2 aws-workflow-live-streaming-master/live-streaming-api && \
+  zip -r ../terraform/medialive_api.zip .
+```
+```bash
+cd terraform && \
+	terraform init && \
+	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -out=plan.out && \
+	terraform apply plan.out
+```
+```bash
+terraform show | grep aws_api_gateway_rest_api -A 9 | grep id
 ```
 
 # Remote accessing the machine

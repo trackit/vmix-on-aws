@@ -8,6 +8,11 @@ output "vmix_instance_id" {
   value       = aws_instance.vmix.id
 }
 
+output "vmix_instance_username" {
+  description = "EC2 Instance username"
+  value       = "Administrator"
+}
+
 output "private_key" {
   description = "EC2 Private Key File"
   value       = "Use the file vmix.pem"

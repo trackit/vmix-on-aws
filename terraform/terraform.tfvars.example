@@ -8,4 +8,4 @@ azs                 = []
 public_subnets      = []
 private_subnets     = []
 instance_type       = ""
-ami                 = ""
+ami                 = "ami-05e6d59d866d538f0"

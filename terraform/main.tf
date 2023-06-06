@@ -25,10 +25,20 @@ module "vpc" {
   enable_dns_support   = true
 }
 
+# not using cloudfront
+module "medialive_api" {
+  source = "github.com/trackit/aws-workflow-live-streaming"
+
+  region               = var.aws_region
+  lambda_zip_path      = "./medialive_api.zip"
+  archive_bucket_name  = "vmix-workflow-live-archive"
+  input_security_group = var.input_security_group
+}
+
 resource "aws_eip" "nat" {
   # count = 2 # Because will be using only one NAT Gateway
 
-  count = "${length(var.private_subnets)}"
+  count = length(var.private_subnets)
 
   vpc = true
 

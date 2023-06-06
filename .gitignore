@@ -48,3 +48,9 @@ plan.out
 
 # Ignore some json file due sensitive data
 trust-policy.json
+
+#Folder from another repository
+live-streaming-api
+
+#MediaLive Lambda Functions
+medialive_api.zip
