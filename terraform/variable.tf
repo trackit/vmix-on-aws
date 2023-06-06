@@ -57,3 +57,9 @@ variable "ami" {
   type        = string
   default     = "ami-05e6d59d866d538f0"
 }
+
+variable "input_security_group" {
+  description = "Media Live Input Security Group"
+  type        = string
+  default     = ""
+}
