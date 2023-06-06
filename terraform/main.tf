@@ -1,6 +1,6 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+  version = "4.0.2"
 
   name = var.name
   cidr = var.cidr
@@ -27,8 +27,8 @@ module "vpc" {
 
 # not using cloudfront
 module "medialive_api" {
-  source = "github.com/trackit/aws-workflow-live-streaming"
-
+  count                = var.input_security_group != "" ? 1 : 0
+  source               = "github.com/trackit/aws-workflow-live-streaming?ref=count-resources"
   region               = var.aws_region
   lambda_zip_path      = "./medialive_api.zip"
   archive_bucket_name  = "vmix-workflow-live-archive"

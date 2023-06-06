@@ -17,7 +17,7 @@ Running vMix software on the cloud
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#setup">Setup</a></li>
         <li><a href="#deploy">Deploy</a></li>
-        <li><a href="#advanced-setup">Advanced Setup</a></li>
+        <li><a href="#advanced-setup-aws-live-streaming">Advanced Setup</a></li>
       </ul>
     </li>
     <li>
@@ -190,7 +190,7 @@ echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terrafo
 terraform plan -destroy -out plan.out && \
     terraform apply plan.out
 ```
-## Advanced Setup
+## Advanced Setup (AWS Live Streaming)
 
 This section describe what's needed to run vMix with AWS Live streaming solution resources.  
 We are going to use a terraform module also created by TrackIt.  
@@ -202,9 +202,9 @@ It'll deploy the following resources:
   >> AWS CloudFront  
 
 Before running terraform it's necessary to have a MediaLive Input Security Group.  
-To create it with open rule to everyone just run the command bellow:  
+To create it with open rule to everyone just run the command bellow. Replace ``{YOUR-AWS-REGION}`` with the region you want to deploy:  
 ```bash
-aws medialive create-input-security-group --region us-west-2 --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
+aws medialive create-input-security-group --region {YOUR-AWS-REGION} --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
 ```
 
 It will output the Input Security Group ID like this:  
@@ -215,7 +215,7 @@ It will output the Input Security Group ID like this:
 Note it somewhere because we will need it in a moment.  
 If you need to destroy it afterwards:  
 ```bash
-aws medialive delete-input-security-group --region us-west-2 --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
+aws medialive delete-input-security-group --region {YOUR-AWS-REGION} --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
 ```
 
 Also you need to create the necessary code files for the API that will control the AWS Media Live and AWS Media Package.  

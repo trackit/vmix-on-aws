@@ -63,3 +63,9 @@ variable "input_security_group" {
   type        = string
   default     = ""
 }
+
+variable "using_cloudfront" {
+  description = "Boolean to set to true if using AWS Cloudfront."
+  default = false
+  type = bool
+}

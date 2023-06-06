@@ -7,7 +7,6 @@
                 "ec2:CreateTags",
                 "ec2:DeleteKeyPair",
                 "ec2:DescribeAddresses",
-                "ec2:DescribeFastLaunchImages",
                 "ec2:DescribeImages",
                 "ec2:DescribeInstanceTypes",
                 "ec2:DescribeInstances",
@@ -17,17 +16,18 @@
                 "ec2:DescribeNetworkAcls",
                 "ec2:DescribeNetworkInterfaces",
                 "ec2:DescribeRouteTables",
+                "ec2:DescribeSecurityGroupRules",
                 "ec2:DescribeSecurityGroups",
                 "ec2:DescribeSubnets",
                 "ec2:DescribeTags",
                 "ec2:DescribeVolumes",
-                "ec2:DescribeVpcClassicLink",
-                "ec2:DescribeVpcClassicLinkDnsSupport",
                 "ec2:DescribeVpcs",
                 "ec2:DisassociateAddress",
                 "ec2:DisassociateRouteTable",
                 "ec2:ReleaseAddress",
+                "iam:GetAccountPasswordPolicy",
                 "iam:GetAccountSummary",
+                "iam:GetServiceLastAccessedDetails",
                 "iam:ListAccountAliases",
                 "iam:ListGroups",
                 "iam:ListMFADevices",
@@ -36,7 +36,29 @@
                 "iam:ListRoles",
                 "iam:ListSAMLProviders",
                 "iam:ListUsers",
+                "iam:TagRole",
+                "iam:PassRole",
+                "ram:ListResources",
+                "s3:ListAllMyBuckets",
+                "securityhub:DescribeHub",
+                "securityhub:GetAdministratorAccount",
+                "securityhub:GetControlFindingSummary",
+                "securityhub:GetInsightResults",
+                "securityhub:ListFindingAggregators",
+                "securityhub:ListMembers",
                 "sts:GetCallerIdentity"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:CreateTable",
+                "dynamodb:DeleteTable",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:ListTagsOfResource"
             ],
             "Resource": "*"
         },
@@ -81,6 +103,14 @@
         },
         {
             "Effect": "Allow",
+            "Action": [
+                "ec2:CreateNetworkAclEntry",
+                "ec2:DeleteNetworkAclEntry"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
             "Action": "ec2:RunInstances",
             "Resource": "*"
         },
@@ -103,6 +133,7 @@
                 "ec2:CreateSecurityGroup",
                 "ec2:DeleteSecurityGroup",
                 "ec2:RevokeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress",
                 "ec2:RunInstances"
             ],
             "Resource": "*"
@@ -113,14 +144,8 @@
                 "ec2:CreateNatGateway",
                 "ec2:CreateSubnet",
                 "ec2:DeleteSubnet",
-                "ec2:ModifySubnetAttribute",
                 "ec2:RunInstances"
             ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "ec2:RunInstances",
             "Resource": "*"
         },
         {
@@ -142,7 +167,6 @@
             "Action": [
                 "ec2:CopyImage",
                 "ec2:DeregisterImage",
-                "ec2:DescribeImageAttribute",
                 "ec2:RunInstances"
             ],
             "Resource": "*"
@@ -155,6 +179,8 @@
         {
             "Effect": "Allow",
             "Action": [
+                "iam:GenerateServiceLastAccessedDetails",
+                "iam:GetGroup",
                 "iam:ListAttachedGroupPolicies",
                 "iam:ListGroupPolicies"
             ],
@@ -174,32 +200,83 @@
         {
             "Effect": "Allow",
             "Action": [
-                "iam:CreateRole",
-                "iam:DeleteRole",
-                "iam:DeleteRolePolicy",
-                "iam:GetRole",
-                "iam:GetRolePolicy",
-                "iam:ListAttachedRolePolicies",
-                "iam:ListInstanceProfilesForRole",
-                "iam:ListRolePolicies",
-                "iam:ListRoleTags",
-                "iam:PassRole",
-                "iam:PutRolePolicy",
-                "iam:TagRole"
+                "iam:CreatePolicy",
+                "iam:GenerateServiceLastAccessedDetails"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
+                "iam:AttachRolePolicy",
+                "iam:CreateRole"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateServiceLinkedRole",
+                "iam:DeleteRole",
+                "iam:DeleteRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:GenerateServiceLastAccessedDetails",
+                "iam:GetRole",
+                "iam:GetRolePolicy",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListInstanceProfilesForRole",
+                "iam:ListRolePolicies",
+                "iam:PutRolePolicy"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:GenerateServiceLastAccessedDetails",
                 "iam:GetAccessKeyLastUsed",
                 "iam:GetLoginProfile",
                 "iam:GetUser",
                 "iam:ListAccessKeys",
                 "iam:ListAttachedUserPolicies",
                 "iam:ListGroupsForUser",
+                "iam:ListSigningCertificates",
                 "iam:ListUserPolicies",
                 "iam:ListUserTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:CreateGrant",
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:AddPermission",
+                "lambda:CreateFunction",
+                "lambda:DeleteFunction",
+                "lambda:GetFunction",
+                "lambda:GetFunctionCodeSigningConfig",
+                "lambda:GetPolicy",
+                "lambda:ListVersionsByFunction",
+                "lambda:RemovePermission"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "apigateway:POST",
+                "apigateway:GET",
+                "apigateway:DELETE",
+                "apigateway:PUT"
             ],
             "Resource": "*"
         }
