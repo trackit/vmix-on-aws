@@ -177,9 +177,9 @@ cd terraform && \
 	terraform apply plan.out
 ```
 
-to get the instance windows password you can replace the {AWS-PROFILE} variable and run the following command:
+to get the instance windows password you can replace the {YOUR-AWS-REGION} variable and run the following command:
 ```bash
-echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id) --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
+aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix --region {YOUR-AWS-REGION} | jq -r '.PasswordData'
 ```
 
 <br/>
@@ -196,6 +196,7 @@ This section describe what's needed to run vMix with AWS Live streaming solution
 We are going to use a terraform module also created by TrackIt.  
 It'll deploy the following resources:  
 > API Gateway resources  
+> DynamoDB  
 > Lambda Functions
   >> AWS Media Live  
   >> AWS Media Package  
@@ -209,7 +210,8 @@ aws medialive create-input-security-group --region {YOUR-AWS-REGION} --whitelist
 
 It will output the Input Security Group ID like this:  
 ```bash
-
+$ aws medialive create-input-security-group --region us-west-2 --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
+7139389
 ```
 
 Note it somewhere because we will need it in a moment.  
@@ -228,12 +230,14 @@ mkdir live-streaming-api && \
   zip -r ../terraform/medialive_api.zip .
 ```
 Finally we can run terraform to deploy the resources.  
-Don't forge to replace ``{YOUR-INPUT-SECGROUP-ID}`` with the Input SecGroup ID created before:
+Terraform will need to create a s3 bucket to archive the medialive/mediapackage files.  
+It's necessary to give a single arbitrary name to the bucket using the var ``bucket_name``.  
+And don't forge to replace ``{YOUR-INPUT-SECGROUP-ID}`` with the Input SecGroup ID created before:
 
 ```bash
 cd terraform && \
 	terraform init && \
-	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -out=plan.out && \
+	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="bucket_name={DESIRED-BUCKET-NAME}" -out=plan.out && \
 	terraform apply plan.out
 ```
 After that you'll need the API endpoint to start using it. The endpoint is formed by the API ID, to get the ID run the following:
