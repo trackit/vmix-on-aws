@@ -66,6 +66,18 @@ variable "input_security_group" {
 
 variable "using_cloudfront" {
   description = "Boolean to set to true if using AWS Cloudfront."
-  default = false
-  type = bool
+  default     = false
+  type        = bool
+}
+
+variable "create_bucket" {
+  description = "Boolean to set to true if want to create s3 bucket."
+  default     = false
+  type        = bool
+}
+
+variable "bucket_name" {
+  description = "S3 bucket name."
+  default     = ""
+  type        = string
 }

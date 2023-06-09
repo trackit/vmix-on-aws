@@ -25,13 +25,30 @@ module "vpc" {
   enable_dns_support   = true
 }
 
-# not using cloudfront
+# This S3 bucket will not be created unless var.create_bucket is set to true
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  create_bucket = var.create_bucket
+
+  bucket = var.bucket_name
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  versioning = {
+    enabled = true
+  }
+}
+
+# module to create API that control Media Live, Media Package
 module "medialive_api" {
   count                = var.input_security_group != "" ? 1 : 0
-  source               = "github.com/trackit/aws-workflow-live-streaming?ref=count-resources"
+  source               = "github.com/trackit/aws-workflow-live-streaming?ref=no-provider"
   region               = var.aws_region
   lambda_zip_path      = "./medialive_api.zip"
-  archive_bucket_name  = "vmix-workflow-live-archive"
+  archive_bucket_name  = module.s3_bucket.s3_bucket_id
   input_security_group = var.input_security_group
 }
 
