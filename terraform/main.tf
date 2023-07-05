@@ -32,6 +32,7 @@ module "s3_bucket" {
   create_bucket = var.create_bucket
 
   bucket = var.bucket_name
+  force_destroy       = "true"
   acl    = "private"
 
   control_object_ownership = true
