@@ -17,7 +17,7 @@ Running vMix software on the cloud
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#setup">Setup</a></li>
         <li><a href="#deploy">Deploy</a></li>
-        <li><a href="#advancedsetup">Advanced Setup</a></li>
+        <li><a href="#advanced-setup-aws-live-streaming">Advanced Setup</a></li>
       </ul>
     </li>
     <li>
@@ -82,6 +82,10 @@ The following tools need to be installed on your system prior to deploy VMix:
 - Nice DCV Client;
     - Installer:  
       https://download.nice-dcv.com/
+
+- zip
+    - How to install on many linux distro:  
+    https://www.tecmint.com/install-zip-and-unzip-in-linux/
 
   If you don't have an Administrative user yet, besides the root user, just walkthrough this guide:  
   https://docs.aws.amazon.com/singlesignon/latest/userguide/getting-started.html
@@ -173,9 +177,9 @@ cd terraform && \
 	terraform apply plan.out
 ```
 
-to get the instance windows password you can replace the {AWS-PROFILE} variable and run the following command:
+to get the instance windows password you can replace the {YOUR-AWS-REGION} variable and run the following command:
 ```bash
-echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id) --priv-launch-key ./vmix.pem --profile vmix | jq -r '.PasswordData')"
+aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | sed 's/"//g') --priv-launch-key ./vmix.pem --profile vmix --region {YOUR-AWS-REGION} | jq -r '.PasswordData'
 ```
 
 <br/>
@@ -186,27 +190,37 @@ echo "vmix-server-password = $(aws ec2 get-password-data --instance-id $(terrafo
 terraform plan -destroy -out plan.out && \
     terraform apply plan.out
 ```
----
-## Advanced Setup
+## Advanced Setup (AWS Live Streaming)
 
-This section describe what's needed to run vMix with AWS Live streaming solutions resources.  
-We are going to use a terraform module also created by TrackIt. It'll deploy the following resources:  
+This section describe what's needed to run vMix with AWS Live streaming solution resources.  
+We are going to use a terraform module also created by TrackIt.  
+It'll deploy the following resources:  
+> API Gateway resources  
+> DynamoDB  
+> Lambda Functions
+  >> AWS Media Live  
+  >> AWS Media Package  
+  >> AWS CloudFront  
 
-
-You need to have a MediaLive Input Security Group.  
-To create it with open rule to everyone:  
+Before running terraform it's necessary to have a MediaLive Input Security Group.  
+To create it with open rule to everyone just run the command bellow. Replace ``{YOUR-AWS-REGION}`` with the region you want to deploy:  
 ```bash
-aws medialive create-input-security-group --region us-west-2 --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
+aws medialive create-input-security-group --region {YOUR-AWS-REGION} --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
 ```
 
-It will output the Input Security Group ID.  
+It will output the Input Security Group ID like this:  
+```bash
+$ aws medialive create-input-security-group --region us-west-2 --whitelist-rules Cidr=0.0.0.0/0 | jq -r '.SecurityGroup.Id'
+7139389
+```
+
 Note it somewhere because we will need it in a moment.  
 If you need to destroy it afterwards:  
 ```bash
-aws medialive delete-input-security-group --region us-west-2 --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
+aws medialive delete-input-security-group --region {YOUR-AWS-REGION} --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
 ```
 
-First you need to create the necessary files for the API that will control the AWS Media Live.  
+Also you need to create the necessary code files for the API that will control the AWS Media Live and AWS Media Package.  
 You just need to run it on the root repository:  
 ```bash
 mkdir live-streaming-api && \
@@ -215,14 +229,28 @@ mkdir live-streaming-api && \
   tar -xz --strip=2 aws-workflow-live-streaming-master/live-streaming-api && \
   zip -r ../terraform/medialive_api.zip .
 ```
+Finally we can run terraform to deploy the resources.  
+Terraform will need to create a s3 bucket to archive the medialive/mediapackage files.  
+It's necessary to give a single arbitrary name to the bucket using the var ``bucket_name``.  
+And don't forge to replace ``{YOUR-INPUT-SECGROUP-ID}`` with the Input SecGroup ID created before:
+
 ```bash
 cd terraform && \
 	terraform init && \
-	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -out=plan.out && \
+	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="bucket_name={DESIRED-BUCKET-NAME}" -out=plan.out && \
 	terraform apply plan.out
 ```
+After that you'll need the API endpoint to start using it. The endpoint is formed by the API ID, to get the ID run the following:
 ```bash
 terraform show | grep aws_api_gateway_rest_api -A 9 | grep id
+```
+The endpoint url syntax is:
+```
+https://{API-ID}.execute-api.{AWS-REGION}.amazonaws.com/{STAGE}
+```
+E.G.:
+```
+https://o4rio2yi2c.execute-api.us-west-2.amazonaws.com/dev
 ```
 
 # Remote accessing the machine
