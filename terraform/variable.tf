@@ -87,3 +87,9 @@ variable "media_convert_bucket_name" {
   type        = string
   default     = ""
 }
+
+variable "media_convert_endpoint" {
+  description = "Media Convert Account Endpoint"
+  type        = string
+  default     = ""
+}

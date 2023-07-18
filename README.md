@@ -254,12 +254,14 @@ https://o4rio2yi2c.execute-api.us-west-2.amazonaws.com/dev
 ```
 
 
-To use with VOD resources you should run:
+To use with VOD resources you should follow the steps bellow:
+
+Get the Media Convert endpoint for the AWS Account you are using:
 ```bash
-terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" -out=plan.out
+aws mediaconvert describe-endpoints
 ```
 
-But before you need to zip the necessary files for the Lambda VOD Workflow. Do it on the repository root folder:
+You need to zip the necessary files for the Lambda VOD Workflow. Run it on the repository root folder:
 ```bash
 mkdir vod-workflow && \
   cd vod-workflow && \
@@ -267,6 +269,13 @@ mkdir vod-workflow && \
   tar -xz --strip=2 aws-workflow-video-on-demand-master/mediaconvert_lambda && \
   zip -r ../mediaconvert_lambda.zip .
 ```
+
+Then finally run terraform:
+```bash
+terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" --var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" -out=plan.out
+```
+
+But before 
 
 
 # Remote accessing the machine

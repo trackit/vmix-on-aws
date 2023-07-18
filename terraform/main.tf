@@ -53,9 +53,9 @@ module "medialive_api" {
   input_security_group = var.input_security_group
 }
 
-resource "aws_media_convert_queue" "vmix" {
-  name = "vmix-vod-queue"
-}
+# resource "aws_media_convert_queue" "vmix" {
+#   name = "vmix-vod-queue"
+# }
 
 module "mediaconvert_flow" {
   count                = var.input_security_group != "" ? 1 : 0
@@ -67,7 +67,7 @@ module "mediaconvert_flow" {
   project_base_name     = "vmix_vod"
   bucket_event_prefix   = "input/"
   bucket_event_suffix   = ".mov"
-  mediaconvert_endpoint = "https://${aws_media_convert_queue.vmix.id}.mediaconvert.${var.aws_region}.amazonaws.com"
+  mediaconvert_endpoint = var.media_convert_endpoint
 }
 
 # These S3 buckets will not be created unless var.create_bucket is set to true. And at least one value is set to the bucket_name variable
