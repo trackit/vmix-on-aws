@@ -260,6 +260,7 @@ Get the Media Convert endpoint for the AWS Account you are using:
 ```bash
 aws mediaconvert describe-endpoints
 ```
+Note the output somewhere, it's needed to run terraform.
 
 You need to zip the necessary files for the Lambda VOD Workflow. Run it on the repository root folder:
 ```bash
@@ -272,10 +273,8 @@ mkdir vod-workflow && \
 
 Then finally run terraform:
 ```bash
-terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" --var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" -out=plan.out
+terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" -out=plan.out
 ```
-
-But before 
 
 
 # Remote accessing the machine
