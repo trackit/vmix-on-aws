@@ -26,22 +26,22 @@ module "vpc" {
 }
 
 # This S3 bucket will not be created unless var.create_bucket is set to true
-module "s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+# module "s3_bucket" {
+#   source = "terraform-aws-modules/s3-bucket/aws"
 
-  create_bucket = var.create_bucket
+#   create_bucket = var.create_bucket
 
-  bucket = var.bucket_name
-  force_destroy       = "true"
-  acl    = "private"
+#   bucket = var.bucket_name
+#   force_destroy       = "true"
+#   acl    = "private"
 
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
+#   control_object_ownership = true
+#   object_ownership         = "ObjectWriter"
 
-  versioning = {
-    enabled = true
-  }
-}
+#   versioning = {
+#     enabled = true
+#   }
+# }
 
 # module to create API that control Media Live, Media Package
 module "medialive_api" {
@@ -49,8 +49,47 @@ module "medialive_api" {
   source               = "github.com/trackit/aws-workflow-live-streaming?ref=no-provider"
   region               = var.aws_region
   lambda_zip_path      = "./medialive_api.zip"
-  archive_bucket_name  = module.s3_bucket.s3_bucket_id
+  archive_bucket_name  = var.media_live_bucket_name
   input_security_group = var.input_security_group
+}
+
+resource "aws_media_convert_queue" "vmix" {
+  name = "vmix-vod-queue"
+}
+
+module "mediaconvert_flow" {
+  count                = var.input_security_group != "" ? 1 : 0
+  source               = "github.com/trackit/aws-workflow-video-on-demand?ref=no-provider"
+  region               = var.aws_region
+  input_bucket_name     = var.media_live_bucket_name
+  output_bucket_name    = var.media_convert_bucket_name
+  lambda_zip_path       = "./mediaconvert_lambda.zip"
+  project_base_name     = "vmix_vod"
+  bucket_event_prefix   = "input/"
+  bucket_event_suffix   = ".mov"
+  mediaconvert_endpoint = "https://${aws_media_convert_queue.vmix.id}.mediaconvert.${var.aws_region}.amazonaws.com"
+}
+
+# These S3 buckets will not be created unless var.create_bucket is set to true. And at least one value is set to the bucket_name variable
+resource "aws_s3_bucket" "media_live_bucket" {
+  # count         = length(var.bucket_name)
+  bucket        = var.media_live_bucket_name
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_acl" "media_live_bucket_acl" {
+  bucket = aws_s3_bucket.media_live_bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket" "media_convert_bucket" {
+  bucket        = var.media_convert_bucket_name
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_acl" "media_convert_bucket_acl" {
+  bucket = aws_s3_bucket.media_convert_bucket.id
+  acl    = "private"
 }
 
 resource "aws_eip" "nat" {

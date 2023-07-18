@@ -17,3 +17,13 @@ output "private_key" {
   description = "EC2 Private Key File"
   value       = "Use the file vmix.pem"
 }
+
+# output "media_live_api_gateway" {
+#   description = "API GW Endpoint to control Media Live"
+#   value       = "${module.medialive_api.aws_api_gateway_rest_api.api.id}.execute-api.${var.aws_region}.amazonaws.com/dev"
+# }
+
+# output "media_convert_endpoint" {
+#   description = "Media Convert Endpoint "
+#   value       = ""
+# }
