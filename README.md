@@ -237,7 +237,7 @@ And don't forge to replace ``{YOUR-INPUT-SECGROUP-ID}`` with the Input SecGroup 
 ```bash
 cd terraform && \
 	terraform init && \
-	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="bucket_name={DESIRED-BUCKET-NAME}" -out=plan.out && \
+	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" -out=plan.out && \
 	terraform apply plan.out
 ```
 After that you'll need the API endpoint to start using it. The endpoint is formed by the API ID, to get the ID run the following:
@@ -252,6 +252,22 @@ E.G.:
 ```
 https://o4rio2yi2c.execute-api.us-west-2.amazonaws.com/dev
 ```
+
+
+To use with VOD resources you should run:
+```bash
+terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" -out=plan.out
+```
+
+But before you need to zip the necessary files for the Lambda VOD Workflow. Do it on the repository root folder:
+```bash
+mkdir vod-workflow && \
+  cd vod-workflow && \
+  curl https://codeload.github.com/trackit/aws-workflow-video-on-demand/tar.gz/master | \
+  tar -xz --strip=2 aws-workflow-video-on-demand-master/mediaconvert_lambda && \
+  zip -r ../mediaconvert_lambda.zip .
+```
+
 
 # Remote accessing the machine
 

@@ -76,8 +76,14 @@ variable "create_bucket" {
   type        = bool
 }
 
-variable "bucket_name" {
-  description = "S3 bucket name."
-  default     = ""
+variable "media_live_bucket_name" {
+  description = "Media Live S3 bucket name"
   type        = string
+  default     = ""
+}
+
+variable "media_convert_bucket_name" {
+  description = "Media Convert S3 bucket name"
+  type        = string
+  default     = ""
 }
