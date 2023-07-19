@@ -21,13 +21,3 @@ output "private_key" {
 output "medialive_api" {
   value = module.medialive_api
 }
-
-# output "media_live_api_gateway" {
-#   description = "API GW Endpoint to control Media Live"
-#   value       = "${aws_api_gateway_rest_api.api.id}.execute-api.${var.aws_region}.amazonaws.com/dev"
-# }
-
-# output "media_convert_endpoint" {
-#   description = "Media Convert Endpoint "
-#   value       = var.media_convert_endpoint
-# }
