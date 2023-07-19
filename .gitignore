@@ -51,6 +51,7 @@ trust-policy.json
 
 #Folder from another repository
 live-streaming-api
+vod-workflow
 
 #MediaLive Lambda Functions
 medialive_api.zip
