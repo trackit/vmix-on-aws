@@ -57,3 +57,39 @@ variable "ami" {
   type        = string
   default     = "ami-05e6d59d866d538f0"
 }
+
+variable "input_security_group" {
+  description = "Media Live Input Security Group"
+  type        = string
+  default     = ""
+}
+
+variable "using_cloudfront" {
+  description = "Boolean to set to true if using AWS Cloudfront."
+  default     = false
+  type        = bool
+}
+
+variable "create_bucket" {
+  description = "Boolean to set to true if want to create s3 bucket."
+  default     = false
+  type        = bool
+}
+
+variable "media_live_bucket_name" {
+  description = "Media Live S3 bucket name"
+  type        = string
+  default     = ""
+}
+
+variable "media_convert_bucket_name" {
+  description = "Media Convert S3 bucket name"
+  type        = string
+  default     = ""
+}
+
+variable "media_convert_endpoint" {
+  description = "Media Convert Account Endpoint"
+  type        = string
+  default     = ""
+}

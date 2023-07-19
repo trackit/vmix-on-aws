@@ -17,3 +17,7 @@ output "private_key" {
   description = "EC2 Private Key File"
   value       = "Use the file vmix.pem"
 }
+
+output "medialive_api" {
+  value = module.medialive_api
+}
