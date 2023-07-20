@@ -273,7 +273,7 @@ mkdir vod-workflow && \
 
 Then finally run terraform:
 ```bash
-terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" -out=plan.out
+terraform plan -var="input_security_group=4642276" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" -var="media_convert_input_bucket_name=media-convert-vmix-in" -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" -out=plan.out
 ```
 
 
