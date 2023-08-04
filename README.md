@@ -250,8 +250,7 @@ medialive_api = [
 ]
 ```
 Note it somewhere because you'll need it for the next steps.
-
-**Create, Start, Stop, and Delete Media Live Channel**
+### Create, Start, Stop, and Delete Media Live Channel
 
 Follow these steps:
 https://github.com/trackit/aws-workflow-live-streaming#get-started-with-api
