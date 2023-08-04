@@ -240,19 +240,21 @@ cd terraform && \
 	terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" -out=plan.out && \
 	terraform apply plan.out
 ```
-After that you'll need the API endpoint to start using it. The endpoint is formed by the API ID, to get the ID run the following:
+After that you'll need the API endpoint to start the Media Live Channel. The endpoint is formed by the API ID. 
+When terraform apply is finished it outputs the endpoint url like this:
 ```bash
-terraform show | grep aws_api_gateway_rest_api -A 9 | grep id
+medialive_api = [
+  {
+    "apigateway_url" = "https://d8hlcql80j.execute-api.us-west-2.amazonaws.com/dev"
+  },
+]
 ```
-The endpoint url syntax is:
-```
-https://{API-ID}.execute-api.{AWS-REGION}.amazonaws.com/{STAGE}
-```
-E.G.:
-```
-https://o4rio2yi2c.execute-api.us-west-2.amazonaws.com/dev
-```
+Note it somewhere because you'll need it for the next steps.
 
+**Create, Start, Stop, and Delete Media Live Channel**
+
+Follow these steps:
+https://github.com/trackit/aws-workflow-live-streaming#get-started-with-api
 
 To use with VOD resources you should follow the steps bellow:
 
