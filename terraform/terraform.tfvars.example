@@ -1,11 +1,11 @@
 # See variable.tf for more information
 allowed_account_ids = []
-aws_region          = ""
+cidr                = "10.20.0.0/16"
+azs                 = ["us-west-2a", "us-west-2c"]
+private_subnets     = ["10.20.11.0/24", "10.20.12.0/24"]
+public_subnets      = ["10.20.101.0/24", "10.20.102.0/24"]
+aws_region          = "us-west-2"
 aws_profile         = ""
 name                = ""
-cidr                = ""
-azs                 = []
-public_subnets      = []
-private_subnets     = []
 instance_type       = ""
 ami                 = "ami-05e6d59d866d538f0"

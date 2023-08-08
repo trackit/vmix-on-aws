@@ -44,7 +44,8 @@ It will deploy the following resources and applications (default):
 
 ### IAM
 
-> 1 Role
+> Roles  
+> Policies
 
 ### EC2
 
@@ -57,10 +58,29 @@ It will deploy the following resources and applications (default):
 > > vMix
 > > Sample Audio/Video files
 
+### Elemental Resources
+
+> Media Live <br/>
+> Media Package <br/>
+> Media Convert
+
+### Serverless Resources
+
+> API Gateway <br/>
+> Lambda Functions <br/>
+
+### Other
+
+> S3 Bucket <br/>
+
+### Optional
+
+> Cloudfront <br/>
+
 *Those resource will depend on how many subnets you want to your infrastructure.  
 The guide assumes 2 subnets are enough. Though you can change it setting the ``private_subnets`` and ``public_subnets`` var values.
 
-## Prerequisites
+# Prerequisites
 
 The following tools need to be installed on your system prior to deploy VMix:
 
@@ -90,7 +110,11 @@ The following tools need to be installed on your system prior to deploy VMix:
   If you don't have an Administrative user yet, besides the root user, just walkthrough this guide:  
   https://docs.aws.amazon.com/singlesignon/latest/userguide/getting-started.html
 
-## Setup
+# Architecture Diagram
+
+![Infrastructure](./arch.png)
+
+# Setup
 
 To start, clone this repository using git.  
 Then, follow the steps always on the repository root folder.  
@@ -144,7 +168,7 @@ https://docs.github.com/en/repositories/creating-and-managing-repositories/cloni
    For more information about using roles with aws cli read it
    here:  https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html
 
-## Deploy
+# Deploy
 
 The infrastructure has some variables with default values (such as aws region and instance type) that can be changed
 through a .tfvars file.
@@ -168,7 +192,7 @@ Example:
 
 <br/>
 
-**To create the infrastructure:**
+## To create the infrastructure:
 
 ```bash
 cd terraform && \
@@ -184,13 +208,13 @@ aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | se
 
 <br/>
 
-**To destroy it:**
+## To destroy it:
 
 ```bash
 terraform plan -destroy -out plan.out && \
     terraform apply plan.out
 ```
-## Advanced Setup (AWS Live Streaming)
+# Advanced Setup (AWS Live Streaming + VOD)
 
 This section describe what's needed to run vMix with AWS Live streaming solution resources.  
 We are going to use a terraform module also created by TrackIt.  
@@ -274,9 +298,29 @@ mkdir vod-workflow && \
 
 Then finally run terraform:
 ```bash
-terraform plan -var="input_security_group=4642276" -var="create_bucket=true" -var="media_live_bucket_name=media-live-vmix-archive" -var="media_convert_bucket_name=media-convert-vmix-out" -var="media_convert_input_bucket_name=media-convert-vmix-in" -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" -out=plan.out
+terraform plan \
+  -var="input_security_group=4642276" \
+  -var="create_bucket=true" \
+  -var="media_live_bucket_name=media-live-vmix-archive" \
+  -var="media_convert_bucket_name=media-convert-vmix-out" \
+  -var="media_convert_input_bucket_name=media-convert-vmix-in" \
+  -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
+  -out=plan.out
 ```
+If you want to distribute your live stream and VOD with cloudfront just run it with the defined variable ```usingcloudfront``` set to true and the variable ```cloudfront_live_domain``` set to your AWS Cloudfront Domain. E.G.:
 
+```bash
+terraform plan \
+  -var="input_security_group=4642276" \
+  -var="create_bucket=true" \
+  -var="media_live_bucket_name=media-live-vmix-archive" \
+  -var="media_convert_bucket_name=media-convert-vmix-out" \
+  -var="media_convert_input_bucket_name=media-convert-vmix-in" \
+  -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
+  -var="using_cloudfront=true" \
+  -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}"
+  -out=plan.out
+```
 
 # Remote accessing the machine
 
@@ -296,14 +340,14 @@ The best way to share multiple inputs to the running instance is by creating a h
 tool.
 system from the NDI Tools.
 
-### Starting the host
+## Starting the host
 
 1. Remote access the instance and start the NDI Tools software
 2. Click on the Bridge tool and fill the fields accordingly. Make sure to use the port 5990 (which is the one open on
    security groups, but you can change it on the terraform variables) and to put a strong encryption key.
 3. Start the bridge host
 
-### Connecting sources
+## Connecting sources
 
 To connect machines to the remote instance, fire up the NDI Tools on the local machine that you want to join and follow
 these steps:

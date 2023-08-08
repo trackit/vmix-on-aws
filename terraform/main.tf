@@ -61,11 +61,11 @@ module "mediaconvert_flow" {
   count                 = var.input_security_group != "" ? 1 : 0
   source                = "github.com/trackit/aws-workflow-video-on-demand?ref=no-provider"
   region                = var.aws_region
-  input_bucket_name     = var.media_convert_input_bucket_name
+  input_bucket_name     = var.media_live_bucket_name
   output_bucket_name    = var.media_convert_bucket_name
   lambda_zip_path       = "./mediaconvert_lambda.zip"
   project_base_name     = "vmix_vod"
-  bucket_event_prefix   = "input/"
+  bucket_event_prefix   = ""
   bucket_event_suffix   = ".ts"
   mediaconvert_endpoint = var.media_convert_endpoint
 }

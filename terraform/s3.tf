@@ -12,17 +12,6 @@ resource "aws_s3_bucket_acl" "media_live_bucket_acl" {
   acl    = "private"
 }
 
-# Bucket used to input the video files for Media Convert
-resource "aws_s3_bucket" "media_convert_input_bucket" {
-  bucket        = var.media_convert_input_bucket_name
-  force_destroy = true
-}
-
-resource "aws_s3_bucket_acl" "media_convert_input_bucket_acl" {
-  bucket = aws_s3_bucket.media_convert_input_bucket.id
-  acl    = "private"
-}
-
 # Bucket used to output the converted video files from Media Convert
 resource "aws_s3_bucket" "media_convert_bucket" {
   bucket        = var.media_convert_bucket_name
