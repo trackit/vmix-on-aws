@@ -82,12 +82,6 @@ variable "media_live_bucket_name" {
   default     = ""
 }
 
-variable "media_convert_input_bucket_name" {
-  description = "Media Convert S3 bucket name for input the video files"
-  type        = string
-  default     = ""
-}
-
 variable "media_convert_bucket_name" {
   description = "Media Convert S3 bucket name for output"
   type        = string

@@ -72,6 +72,7 @@ It will deploy the following resources and applications (default):
 ### Other
 
 > S3 Bucket <br/>
+> DynamoDB  
 
 ### Optional
 
@@ -224,7 +225,6 @@ It'll deploy the following resources:
 > Lambda Functions
   >> AWS Media Live  
   >> AWS Media Package  
-  >> AWS CloudFront  
 
 Before running terraform it's necessary to have a MediaLive Input Security Group.  
 To create it with open rule to everyone just run the command bellow. Replace ``{YOUR-AWS-REGION}`` with the region you want to deploy:  
@@ -274,20 +274,21 @@ medialive_api = [
 ]
 ```
 Note it somewhere because you'll need it for the next steps.
-### Create, Start, Stop, and Delete Media Live Channel
+
+## Create, Start, Stop, and Delete Media Live Channel
 
 Follow these steps:
 https://github.com/trackit/aws-workflow-live-streaming#get-started-with-api
 
-To use with VOD resources you should follow the steps bellow:
+To use with VOD resources you should follow the steps bellow.
 
-Get the Media Convert endpoint for the AWS Account you are using:
+1. Get the Media Convert endpoint for the AWS Account you are using:
 ```bash
 aws mediaconvert describe-endpoints
 ```
 Note the output somewhere, it's needed to run terraform.
 
-You need to zip the necessary files for the Lambda VOD Workflow. Run it on the repository root folder:
+2. You need to zip the necessary files for the Lambda VOD Workflow. Run it on the repository root folder:
 ```bash
 mkdir vod-workflow && \
   cd vod-workflow && \
@@ -296,14 +297,13 @@ mkdir vod-workflow && \
   zip -r ../mediaconvert_lambda.zip .
 ```
 
-Then finally run terraform:
+3. Then finally run terraform:
 ```bash
 terraform plan \
   -var="input_security_group=4642276" \
   -var="create_bucket=true" \
   -var="media_live_bucket_name=media-live-vmix-archive" \
   -var="media_convert_bucket_name=media-convert-vmix-out" \
-  -var="media_convert_input_bucket_name=media-convert-vmix-in" \
   -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
   -out=plan.out
 ```
@@ -315,7 +315,6 @@ terraform plan \
   -var="create_bucket=true" \
   -var="media_live_bucket_name=media-live-vmix-archive" \
   -var="media_convert_bucket_name=media-convert-vmix-out" \
-  -var="media_convert_input_bucket_name=media-convert-vmix-in" \
   -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
   -var="using_cloudfront=true" \
   -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}"
