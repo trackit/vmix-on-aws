@@ -58,7 +58,7 @@ module "medialive_api" {
 # }
 
 module "mediaconvert_flow" {
-  count                 = var.input_security_group != "" ? 1 : 0
+  count                 = var.media_convert_bucket_name != "" ? 1 : 0
   source                = "github.com/trackit/aws-workflow-video-on-demand?ref=no-provider"
   region                = var.aws_region
   input_bucket_name     = var.media_live_bucket_name
