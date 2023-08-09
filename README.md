@@ -15,9 +15,10 @@ Running vMix software on the cloud
       <a href="#getting-started">Getting started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#architecture-diagram">Architecture Diagram</a></li>
         <li><a href="#setup">Setup</a></li>
         <li><a href="#deploy">Deploy</a></li>
-        <li><a href="#advanced-setup-aws-live-streaming">Advanced Setup</a></li>
+        <li><a href="#advanced-setup-live-streaming-and-vod">Advanced Setup</a></li>
       </ul>
     </li>
     <li>
@@ -29,87 +30,77 @@ Running vMix software on the cloud
 
 # Getting started
 
-The following steps describe how to deploy a vMix environment using terraform.  
-Read more about vMix here: https://www.vmix.com/software/  
-It will deploy the following resources and applications (default):
+This guide provides step-by-step instructions for deploying a vMix environment utilizing Terraform infrastructure as code. To learn more about vMix, visit their official website: https://www.vmix.com/software/.  
+By following this guide, you will set up the following resources and applications with default configurations:
 
-### Network
+## Network
 
-> 1 VPC <br/>
-> 2 Public Subnets* <br/>
-> 2 Private Subnets* <br/>
-> 2 NAT Gateway* <br/>
-> 2 Elastic IPs* <br/>
-> 1 Security Group <br/>
+- 1 Virtual Private Cloud (VPC)
+- 2 Public Subnets
+- 2 Private Subnets
+- 2 NAT Gateways
+- 2 Elastic IP Addresses
+- 1 Security Group
 
-### IAM
+## IAM
 
-> Roles  
-> Policies
+- Roles
+- Policies
 
-### EC2
+## EC2 Instance Provisioning
 
-> 1 Private Key <br/>
-> 1 AWS Key Pair <br/>
-> 1 EC2 **g4dn.2xlarge** instance with:
->> Nice DCV  
-> > NVIDIA GRID Driver  
-> > NDI  
-> > vMix
-> > Sample Audio/Video files
+- 1 Private Key
+- 1 AWS Key Pair
+- 1 EC2 instance of type **g4dn.2xlarge**, including the following software components:
+  - Nice DCV
+  - NVIDIA GRID Driver
+  - NDI
+  - vMix
+  - Sample Audio/Video files
 
-### Elemental Resources
+## Elemental Resources Configuration
 
-> Media Live <br/>
-> Media Package <br/>
-> Media Convert
+- AWS Elemental MediaLive
+- AWS Elemental MediaPackage
+- AWS Elemental MediaConvert
 
-### Serverless Resources
+## Serverless Resources Integration
 
-> API Gateway <br/>
-> Lambda Functions <br/>
+- API Gateway
+- Lambda Functions
 
-### Other
+## Additional Resources
 
-> S3 Bucket <br/>
-> DynamoDB  
+- S3 Bucket
+- DynamoDB
 
-### Optional
+## Optional Additions
 
-> Cloudfront <br/>
+- CloudFront Integration
 
-*Those resource will depend on how many subnets you want to your infrastructure.  
-The guide assumes 2 subnets are enough. Though you can change it setting the ``private_subnets`` and ``public_subnets`` var values.
+*The number of subnets will depend on your infrastructure needs. This guide assumes 2 subnets are sufficient, but you can adjust the `private_subnets` and `public_subnets` variable values to your requirements.
 
 # Prerequisites
 
-The following tools need to be installed on your system prior to deploy VMix:
+Before deploying vMix on AWS using Terraform, ensure that you have the following tools and permissions in place:
 
-- AWS Access and Secret Key with permission to create IAM roles(Administrative User);
-    - Instructions to create the keys:  
-      https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
-- AWS CLI;
-    - Installation instructions:  
-      https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+- AWS Access and Secret Key with permissions to create IAM roles (Administrative User):
+  - Instructions to create the keys can be found [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey).
+- AWS CLI:
+  - Installation instructions are available [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 - jq (json processor):
-    - Installer: 
-      https://stedolan.github.io/jq/download/
-- Git;
-    - Installation instructions:  
-      https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
-- Terraform;
-    - Installation instructions:
-      https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
-- Nice DCV Client;
-    - Installer:  
-      https://download.nice-dcv.com/
+  - Installation: [Download jq](https://stedolan.github.io/jq/download/).
+- Git:
+  - Installation instructions can be found [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+- Terraform:
+  - Installation instructions are available [here](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
+- Nice DCV Client:
+  - Installation: [Download Nice DCV Client](https://download.nice-dcv.com/).
 
-- zip
-    - How to install on many linux distro:  
-    https://www.tecmint.com/install-zip-and-unzip-in-linux/
+Additionally, ensure you have the `zip` tool installed. You can find installation instructions for various Linux distributions [here](https://www.tecmint.com/install-zip-and-unzip-in-linux/).
 
-  If you don't have an Administrative user yet, besides the root user, just walkthrough this guide:  
-  https://docs.aws.amazon.com/singlesignon/latest/userguide/getting-started.html
+If you don't have an Administrative user yet, apart from the root user, you can follow this guide to create one:  
+[Creating an AWS SSO User](https://docs.aws.amazon.com/singlesignon/latest/userguide/getting-started.html).  
 
 # Architecture Diagram
 
@@ -215,7 +206,7 @@ aws ec2 get-password-data --instance-id $(terraform output vmix_instance_id | se
 terraform plan -destroy -out plan.out && \
     terraform apply plan.out
 ```
-# Advanced Setup (AWS Live Streaming + VOD)
+# Advanced Setup (Live Streaming and VOD)
 
 This section describe what's needed to run vMix with AWS Live streaming solution resources.  
 We are going to use a terraform module also created by TrackIt.  
