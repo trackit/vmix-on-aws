@@ -267,7 +267,8 @@
                 "lambda:GetFunctionCodeSigningConfig",
                 "lambda:GetPolicy",
                 "lambda:ListVersionsByFunction",
-                "lambda:RemovePermission"
+                "lambda:RemovePermission",
+                "lambda:UpdateFunctionConfiguration"
             ],
             "Resource": "*"
         },

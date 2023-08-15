@@ -13,17 +13,22 @@ Running vMix software on the cloud
   <ol>
     <li>
       <a href="#getting-started">Getting started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#architecture-diagram">Architecture Diagram</a></li>
-        <li><a href="#setup">Setup</a></li>
-        <li><a href="#deploy">Deploy</a></li>
-        <li><a href="#advanced-setup-for-live-streaming-and-vod-integration">Advanced Setup</a></li>
-      </ul>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#architecture-diagram">Architecture Diagram</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="#deployment">Deployment</a></li>
+      <li><a href="#advanced-deployment-live-streaming-and-vod-integration">Advanced Deployment</a></li>
+        <ul>
+          <li><a href="#live-streaming-configuration">Live Streaming Configuration</a></li>
+            <ul>
+              <li><a href="#create-start-stop-and-delete-media-live-channel">Manage Media Live Channel</a></li>
+            </ul>
+          <li><a href="#video-on-demand-configuration">Video On Demand Configuration</a></li>
+        </ul>
     </li>
-    <li>
-      <a href="#references">References</a>
-    </li>
+    <li><a href="#remote-accessing-the-instance">Remote accessing the vMix Instance</a></li>
+    <li><a href="#-streaming-remote-cameras-and-desktop">Streaming Remote Devices</a></li>
+    <li><a href="#references">References</a></li>
   </ol>
 </details>
 <br/>
@@ -213,14 +218,17 @@ The following steps will guide you through deploying the infrastructure. Some va
 
 *Note: Ensure that you exercise caution when destroying the infrastructure, as this action is irreversible and will remove all resources.*
 
-# Advanced Setup: Live Streaming and VOD Integration
+Bellow there's a section explaining how to access the Instance and basic configure vMix:  
+<a href="#remote-accessing-the-instance">Remote accessing the vMix Instance</a>
 
-## Live Streaming Configuration
+# Advanced Deployment: Live Streaming and VOD Integration
 
 This section guides you through the steps to integrate vMix with AWS Live Streaming and Video On Demand (VOD) solutions, utilizing two Terraform modules developed by TrackIt:
 
 - **Live Streaming**: [AWS Workflow Live Streaming](https://github.com/trackit/aws-workflow-live-streaming)
 - **Video On Demand**: [AWS Workflow Video On Demand](https://github.com/trackit/aws-workflow-video-on-demand)
+
+## Live Streaming Configuration
 
 For the Live Streaming setup, the deployment encompasses the following resources:
 - API Gateway resources
@@ -241,7 +249,7 @@ For the Live Streaming setup, the deployment encompasses the following resources
     aws medialive delete-input-security-group --region {YOUR-AWS-REGION} --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
     ```
 
-2. **Lambda Convert Code**  
+2. **Lambda Controlling Code**  
 
     Additionally, you need to create the required code files for the API responsible for controlling AWS Media Live and AWS Media Package. Execute the following commands from the root repository:
 
@@ -261,7 +269,11 @@ For the Live Streaming setup, the deployment encompasses the following resources
     ```bash
     cd terraform && \
       terraform init && \
-      terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" -out=plan.out && \
+      terraform plan \
+      -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" \
+      -var="create_bucket=true" \
+      -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" \
+      -out=plan.out && \
       terraform apply plan.out
     ```
 
@@ -277,6 +289,20 @@ For the Live Streaming setup, the deployment encompasses the following resources
 
     Retain this URL as it will be necessary for subsequent steps.
 
+    If you intend to distribute your live stream and VOD content using CloudFront, modify the command by setting the `using_cloudfront` variable to true and specifying your AWS CloudFront domain in the `cloudfront_live_domain` variable:
+      ```bash
+        cd terraform && \
+          terraform init && \
+          terraform plan \
+          -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" \
+          -var="create_bucket=true" \
+          -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" \
+          -var="using_cloudfront=true" \
+          -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}" \
+          -out=plan.out && \
+          terraform apply plan.out
+        ```
+
 ### Create, Start, Stop, and Delete Media Live Channel
 
 The provided API should be used to manage livestreams. It does not require authorization.  
@@ -290,6 +316,10 @@ For comprehensive instructions, refer to: [Getting Started with API](https://git
 ## Video On Demand Configuration
 
 In the Video On Demand (VOD) deployment, all live streaming files are converted into the VOD format (.mp4).
+
+The deployment encompasses the following resources:
+- S3 Bucket resources  
+- Lambda Functions (for creating the Media Convert jobs when triggered by the s3 bucket)
 
 To perform the VOD deployment, follow these steps:
 
@@ -312,12 +342,12 @@ To perform the VOD deployment, follow these steps:
       cd vod-workflow && \
       curl https://codeload.github.com/trackit/aws-workflow-video-on-demand/tar.gz/master | \
       tar -xz --strip=2 aws-workflow-video-on-demand-master/mediaconvert_lambda && \
-      zip -r ../mediaconvert_lambda.zip .
+      zip -r ../terraform/mediaconvert_lambda.zip .
     ```
 
-3. **Run Terraform Configuration**
+3. **Initiate the Terraform Deployment**
 
-    Run the following Terraform command to initiate the VOD configuration:
+    To kick off the VOD deployment, execute the following Terraform command:
 
     ```bash
     terraform plan \
@@ -326,10 +356,11 @@ To perform the VOD deployment, follow these steps:
       -var="media_live_bucket_name=media-live-vmix-archive" \
       -var="media_convert_bucket_name=media-convert-vmix-out" \
       -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
-      -out=plan.out
+      -out=plan.out && \
+      terraform apply plan.out
     ```
 
-    If you intend to distribute your live stream and VOD content using CloudFront, modify the command by setting the `using_cloudfront` variable to true and specifying your AWS CloudFront domain in the `cloudfront_live_domain` variable:
+     Similarly, if you aim to distribute your live stream and VOD content through CloudFront, modify the command by setting the `using_cloudfront` variable to true and indicating your AWS CloudFront domain in the `cloudfront_live_domain` variable:
 
     ```bash
     terraform plan \
@@ -340,46 +371,85 @@ To perform the VOD deployment, follow these steps:
       -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
       -var="using_cloudfront=true" \
       -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}" \
-      -out=plan.out
+      -out=plan.out && \
+      terraform apply plan.out
     ```
 
-Upon successful execution of the `terraform plan` command, a comprehensive plan will be generated for the VOD setup. This plan includes considerations for CloudFront distribution if applicable.
+    Upon the successful execution of the terraform apply command, the live streaming deployment, coupled with the VOD setup, is completed. This deployment also takes into account CloudFront distribution if it is applicable to your configuration.
+
+# Destroy the deployment
+
+If you find it necessary to dismantle the deployment, you can achieve this in just a few minutes using various methods, including the API created, Terraform, and the AWS CLI.
+1. **Delete Elemental Resources**  
+    First and foremost, it's vital to halt the Media Live Channel and subsequently delete the channel. This can be executed through the AWS Management Console or by utilizing the API (via POST and DELETE requests), as thoroughly outlined in the documentation:  
+    [Get Started with API](https://github.com/trackit/aws-workflow-live-streaming#get-started-with-api)
+
+2. **Delete Terraform Resources**  
+    Once the Media Live and Media Package components have been successfully dismantled, proceed with the removal of resources created by Terraform. Make sure to execute the following commands from within the Terraform folder:
+    ```bash
+    terraform plan -destroy -out plan.out && \
+      terraform apply plan.out
+    ```
+
+3. **Delete IAM Resources**  
+    Upon completing the preceding steps, move forward to eliminate the established role and policy. An effective approach involves navigating to the AWS IAM Management Console's Role Menu ([console.aws.amazon.com/iamv2/home#/roles](https://console.aws.amazon.com/iamv2/home#/roles)) and searching for the role named "deploy-vmix-role."  
+    Access this role and proceed to remove the permission policy that was associated with it.  
+    Be attentive to any warning prompts. Subsequently, delete the role itself.
+
+4. **Delete Media Live Input Security Group**  
+    The final step involves the Input Security Group that was created manually using the AWS CLI. Execute the following command, replacing `{YOUR-INPUT-SECGROUP-ID}` with the Input Security Group ID that was generated at the beginning:
+    ```bash
+    aws medialive delete-input-security-group --region {YOUR-AWS-REGION} --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
+    ```
+
+With these actions completed, your deployment will be successfully dismantled.
 
 # Remote Accessing the Instance
 
 To establish remote access to the Windows machine created on AWS, we will utilize the [Nice DCV software](https://download.nice-dcv.com/) provided by Amazon.  
-Download the appropriate client for your operating system and connect to the instance using the hostname/public IP address, username, and password generated by the Terraform output.
+Download the appropriate client for your operating system and connect to the instance using the hostname/public IP address, username, and password generated by the Terraform output.  
+
+Upon logging in to the instance, you will find a vMix shortcut on the desktop.  
+When you launch vMix for the first time, you might receive a notification that the key has expired.  
+In this scenario, you will need to generate a trial key for yourself within the application or by visiting the vMix website. Alternatively, you can choose to purchase the full version of vMix if desired.
 
 # 📺 Streaming Remote Cameras and Desktop
 
 To stream camera and desktop images to the instance, we will employ the [NDI Tools Software](https://ndi.video/tools/ndi-tools/).
 
-## 🌉 Bridging Resources
+## 🌉 Bridging resources
 
-The most effective way to share multiple inputs with the running instance is by creating a host-share mechanism using the Bridge tool from the NDI Tools system.
+The best way to share multiple inputs to the running instance is by creating a host-share mechanism using the Bridge
+tool.
+system from the NDI Tools.
 
-## Starting the Host
+## Starting the host
 
-1. Access the instance remotely and launch the NDI Tools software.
-2. Open the Bridge tool and populate the fields accordingly. Make sure to use port 5990 (the port open in security groups, but you can modify it in the Terraform variables) and set a robust encryption key.
-3. Initiate the bridge host.
+1. Remote access the instance and start the NDI Tools software
+2. Click on the Bridge tool and fill the fields accordingly. Make sure to use the port 5990 (which is the one open on
+   security groups, but you can change it on the terraform variables) and to put a strong encryption key.
+3. Start the bridge host
 
-## Connecting Sources
+## Connecting sources
 
-To connect machines to the remote instance, follow these steps on the local machine you wish to link:
+To connect machines to the remote instance, fire up the NDI Tools on the local machine that you want to join and follow
+these steps:
 
-1. Launch the NDI Tools and select the Bridge tool. Navigate to the Join tab and complete the fields based on the host instance.
-2. Click "Join."
+1. Click on the Bridge tool, select the Join tab and fill out the fields based on the host instance
+2. Click join
 
-After these steps, you should be able to leverage your local resources, such as cameras and desktop screens, on the remote instance. You can initiate the NDI tool "Screen capture" to commence sending NDI signals to the instance.
+After these steps, you should be able to use your local resources such as camera and desktop screen on the instance. You
+can start the NDI tool "Screen capture" to begin sending NDI signals to the instance.
+<br/></br>
+For more information about the Bridge service, [click here](https://www.youtube.com/watch?v=CkY9kFyOFs8)
 
-For additional insights into the Bridge service, refer to this [video](https://www.youtube.com/watch?v=CkY9kFyOFs8).
+## 🔗 Remote share
 
-## 🔗 Remote Share
-
-Utilize the remote share option to send invite URLs to other devices (e.g., mobile smartphones or additional desktops) to enable them to transmit their NDI sources over the internet. Simply open the "Remote" option on NDI Tools within the AWS instance, activate remote connections, and share the link with the desired device.
-
-For more information about this service, watch this [video](https://www.youtube.com/watch?v=wXh-AXwRy30).
+You can also use the remote share option to be able to send invite URLs to other devices (like mobile smartphones or
+even other desktops) to be able to send their NDI sources trough the internet. Just open "Remote" option on NDI
+Tools on the AWS instance, enable some remote connections and send the link to the device you want to share.
+<br/><br/>
+For more information about this service, [click here](https://www.youtube.com/watch?v=wXh-AXwRy30)
 
 # References
 
