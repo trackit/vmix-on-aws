@@ -13,17 +13,22 @@ Running vMix software on the cloud
   <ol>
     <li>
       <a href="#getting-started">Getting started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#architecture-diagram">Architecture Diagram</a></li>
-        <li><a href="#setup">Setup</a></li>
-        <li><a href="#deploy">Deploy</a></li>
-        <li><a href="#advanced-setup-for-live-streaming-and-vod-integration">Advanced Setup</a></li>
-      </ul>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#architecture-diagram">Architecture Diagram</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="#deployment">Deployment</a></li>
+      <li><a href="#advanced-setup-live-streaming-and-vod-integration">Advanced Setup</a></li>
+        <ul>
+          <li><a href="#live-streaming-configuration">Live Streaming Configuration</a></li>
+            <ul>
+              <li><a href="#create-start-stop-and-delete-media-live-channel">Manage Media Live Channel</a></li>
+            </ul>
+          <li><a href="#video-on-demand-configuration">Video On Demand Configuration</a></li>
+        </ul>
     </li>
-    <li>
-      <a href="#references">References</a>
-    </li>
+    <li><a href="#remote-accessing-the-instance">Remote accessing the vMix Instance</a></li>
+    <li><a href="#-streaming-remote-cameras-and-desktop">Streaming Remote Devices</a></li>
+    <li><a href="#references">References</a></li>
   </ol>
 </details>
 <br/>
@@ -354,32 +359,39 @@ Download the appropriate client for your operating system and connect to the ins
 
 To stream camera and desktop images to the instance, we will employ the [NDI Tools Software](https://ndi.video/tools/ndi-tools/).
 
-## 🌉 Bridging Resources
+## 🌉 Bridging resources
 
-The most effective way to share multiple inputs with the running instance is by creating a host-share mechanism using the Bridge tool from the NDI Tools system.
+The best way to share multiple inputs to the running instance is by creating a host-share mechanism using the Bridge
+tool.
+system from the NDI Tools.
 
-## Starting the Host
+## Starting the host
 
-1. Access the instance remotely and launch the NDI Tools software.
-2. Open the Bridge tool and populate the fields accordingly. Make sure to use port 5990 (the port open in security groups, but you can modify it in the Terraform variables) and set a robust encryption key.
-3. Initiate the bridge host.
+1. Remote access the instance and start the NDI Tools software
+2. Click on the Bridge tool and fill the fields accordingly. Make sure to use the port 5990 (which is the one open on
+   security groups, but you can change it on the terraform variables) and to put a strong encryption key.
+3. Start the bridge host
 
-## Connecting Sources
+## Connecting sources
 
-To connect machines to the remote instance, follow these steps on the local machine you wish to link:
+To connect machines to the remote instance, fire up the NDI Tools on the local machine that you want to join and follow
+these steps:
 
-1. Launch the NDI Tools and select the Bridge tool. Navigate to the Join tab and complete the fields based on the host instance.
-2. Click "Join."
+1. Click on the Bridge tool, select the Join tab and fill out the fields based on the host instance
+2. Click join
 
-After these steps, you should be able to leverage your local resources, such as cameras and desktop screens, on the remote instance. You can initiate the NDI tool "Screen capture" to commence sending NDI signals to the instance.
+After these steps, you should be able to use your local resources such as camera and desktop screen on the instance. You
+can start the NDI tool "Screen capture" to begin sending NDI signals to the instance.
+<br/></br>
+For more information about the Bridge service, [click here](https://www.youtube.com/watch?v=CkY9kFyOFs8)
 
-For additional insights into the Bridge service, refer to this [video](https://www.youtube.com/watch?v=CkY9kFyOFs8).
+## 🔗 Remote share
 
-## 🔗 Remote Share
-
-Utilize the remote share option to send invite URLs to other devices (e.g., mobile smartphones or additional desktops) to enable them to transmit their NDI sources over the internet. Simply open the "Remote" option on NDI Tools within the AWS instance, activate remote connections, and share the link with the desired device.
-
-For more information about this service, watch this [video](https://www.youtube.com/watch?v=wXh-AXwRy30).
+You can also use the remote share option to be able to send invite URLs to other devices (like mobile smartphones or
+even other desktops) to be able to send their NDI sources trough the internet. Just open "Remote" option on NDI
+Tools on the AWS instance, enable some remote connections and send the link to the device you want to share.
+<br/><br/>
+For more information about this service, [click here](https://www.youtube.com/watch?v=wXh-AXwRy30)
 
 # References
 
