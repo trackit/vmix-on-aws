@@ -17,7 +17,7 @@ Running vMix software on the cloud
       <li><a href="#architecture-diagram">Architecture Diagram</a></li>
       <li><a href="#setup">Setup</a></li>
       <li><a href="#deployment">Deployment</a></li>
-      <li><a href="#advanced-setup-live-streaming-and-vod-integration">Advanced Setup</a></li>
+      <li><a href="#advanced-deployment-live-streaming-and-vod-integration">Advanced Deployment</a></li>
         <ul>
           <li><a href="#live-streaming-configuration">Live Streaming Configuration</a></li>
             <ul>
@@ -218,14 +218,17 @@ The following steps will guide you through deploying the infrastructure. Some va
 
 *Note: Ensure that you exercise caution when destroying the infrastructure, as this action is irreversible and will remove all resources.*
 
-# Advanced Setup: Live Streaming and VOD Integration
+Bellow there's a section explaining how to access the Instance and basic configure vMix:  
+<a href="#remote-accessing-the-instance">Remote accessing the vMix Instance</a>
 
-## Live Streaming Configuration
+# Advanced Deployment: Live Streaming and VOD Integration
 
 This section guides you through the steps to integrate vMix with AWS Live Streaming and Video On Demand (VOD) solutions, utilizing two Terraform modules developed by TrackIt:
 
 - **Live Streaming**: [AWS Workflow Live Streaming](https://github.com/trackit/aws-workflow-live-streaming)
 - **Video On Demand**: [AWS Workflow Video On Demand](https://github.com/trackit/aws-workflow-video-on-demand)
+
+## Live Streaming Configuration
 
 For the Live Streaming setup, the deployment encompasses the following resources:
 - API Gateway resources
@@ -246,7 +249,7 @@ For the Live Streaming setup, the deployment encompasses the following resources
     aws medialive delete-input-security-group --region {YOUR-AWS-REGION} --input-security-group-id {YOUR-INPUT-SECGROUP-ID}
     ```
 
-2. **Lambda Convert Code**  
+2. **Lambda Controlling Code**  
 
     Additionally, you need to create the required code files for the API responsible for controlling AWS Media Live and AWS Media Package. Execute the following commands from the root repository:
 
@@ -266,7 +269,11 @@ For the Live Streaming setup, the deployment encompasses the following resources
     ```bash
     cd terraform && \
       terraform init && \
-      terraform plan -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" -var="create_bucket=true" -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" -out=plan.out && \
+      terraform plan \
+      -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" \
+      -var="create_bucket=true" \
+      -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" \
+      -out=plan.out && \
       terraform apply plan.out
     ```
 
@@ -282,6 +289,20 @@ For the Live Streaming setup, the deployment encompasses the following resources
 
     Retain this URL as it will be necessary for subsequent steps.
 
+    If you intend to distribute your live stream and VOD content using CloudFront, modify the command by setting the `using_cloudfront` variable to true and specifying your AWS CloudFront domain in the `cloudfront_live_domain` variable:
+      ```bash
+        cd terraform && \
+          terraform init && \
+          terraform plan \
+          -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" \
+          -var="create_bucket=true" \
+          -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" \
+          -var="using_cloudfront=true" \
+          -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}" \
+          -out=plan.out && \
+          terraform apply plan.out
+        ```
+
 ### Create, Start, Stop, and Delete Media Live Channel
 
 The provided API should be used to manage livestreams. It does not require authorization.  
@@ -295,6 +316,10 @@ For comprehensive instructions, refer to: [Getting Started with API](https://git
 ## Video On Demand Configuration
 
 In the Video On Demand (VOD) deployment, all live streaming files are converted into the VOD format (.mp4).
+
+The deployment encompasses the following resources:
+- S3 Bucket resources  
+- Lambda Functions (for creating the Media Convert jobs when triggered by the s3 bucket)
 
 To perform the VOD deployment, follow these steps:
 
@@ -317,12 +342,12 @@ To perform the VOD deployment, follow these steps:
       cd vod-workflow && \
       curl https://codeload.github.com/trackit/aws-workflow-video-on-demand/tar.gz/master | \
       tar -xz --strip=2 aws-workflow-video-on-demand-master/mediaconvert_lambda && \
-      zip -r ../mediaconvert_lambda.zip .
+      zip -r ../terraform/mediaconvert_lambda.zip .
     ```
 
-3. **Run Terraform Configuration**
+3. **Initiate the Terraform Deployment**
 
-    Run the following Terraform command to initiate the VOD configuration:
+    To kick off the VOD deployment, execute the following Terraform command:
 
     ```bash
     terraform plan \
@@ -331,10 +356,11 @@ To perform the VOD deployment, follow these steps:
       -var="media_live_bucket_name=media-live-vmix-archive" \
       -var="media_convert_bucket_name=media-convert-vmix-out" \
       -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
-      -out=plan.out
+      -out=plan.out && \
+      terraform apply plan.out
     ```
 
-    If you intend to distribute your live stream and VOD content using CloudFront, modify the command by setting the `using_cloudfront` variable to true and specifying your AWS CloudFront domain in the `cloudfront_live_domain` variable:
+     Similarly, if you aim to distribute your live stream and VOD content through CloudFront, modify the command by setting the `using_cloudfront` variable to true and indicating your AWS CloudFront domain in the `cloudfront_live_domain` variable:
 
     ```bash
     terraform plan \
@@ -345,10 +371,28 @@ To perform the VOD deployment, follow these steps:
       -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
       -var="using_cloudfront=true" \
       -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}" \
-      -out=plan.out
+      -out=plan.out && \
+      terraform apply plan.out
     ```
 
-Upon successful execution of the `terraform plan` command, a comprehensive plan will be generated for the VOD setup. This plan includes considerations for CloudFront distribution if applicable.
+    Upon the successful execution of the terraform apply command, the live streaming deployment, coupled with the VOD setup, is completed. This deployment also takes into account CloudFront distribution if it is applicable to your configuration.
+
+# Destroy the deployment
+
+If you find it necessary to dismantle the deployment, you can achieve this in just a few minutes using various methods, including the API created, Terraform, and the AWS CLI.
+1. **Delete Elemental Resources**  
+    First and foremost, it's vital to halt the Media Live Channel and subsequently delete the channel. This can be executed through the AWS Management Console or by utilizing the API (via POST and DELETE requests), as thoroughly outlined in the documentation:  
+    [Get Started with API](https://github.com/trackit/aws-workflow-live-streaming#get-started-with-api)
+
+2. **Delete Terraform Resources**  
+    Once the Media Live and Media Package components have been successfully dismantled, proceed with the removal of resources created by Terraform. Make sure to execute the following commands from within the Terraform folder:
+    ```bash
+    terraform plan -destroy -out plan.out && \
+      terraform apply plan.out
+    ```
+
+3. **Delete IAM Resources**  
+    Upon completing the preceding steps, move forward to eliminate the established role and policy. An effective approach involves navigating to the AWS IAM Management Console's Role Menu ([console.aws.amazon.com/iamv2/home#/roles](https://console.aws.amazon.com/iamv2/home#/roles)) and searching for the role named "deploy-vmix-role." Access this role and proceed to remove the permission policy that was associated with it. Be attentive to any warning prompts. Subsequently, delete the role itself.
 
 # Remote Accessing the Instance
 
