@@ -58,38 +58,16 @@ module "medialive_api" {
 # }
 
 module "mediaconvert_flow" {
-  count                = var.input_security_group != "" ? 1 : 0
-  source               = "github.com/trackit/aws-workflow-video-on-demand?ref=no-provider"
-  region               = var.aws_region
+  count                 = var.media_convert_bucket_name != "" ? 1 : 0
+  source                = "github.com/trackit/aws-workflow-video-on-demand?ref=no-provider"
+  region                = var.aws_region
   input_bucket_name     = var.media_live_bucket_name
   output_bucket_name    = var.media_convert_bucket_name
   lambda_zip_path       = "./mediaconvert_lambda.zip"
   project_base_name     = "vmix_vod"
-  bucket_event_prefix   = "input/"
-  bucket_event_suffix   = ".mov"
+  bucket_event_prefix   = ""
+  bucket_event_suffix   = ".ts"
   mediaconvert_endpoint = var.media_convert_endpoint
-}
-
-# These S3 buckets will not be created unless var.create_bucket is set to true. And at least one value is set to the bucket_name variable
-resource "aws_s3_bucket" "media_live_bucket" {
-  # count         = length(var.bucket_name)
-  bucket        = var.media_live_bucket_name
-  force_destroy = true
-}
-
-resource "aws_s3_bucket_acl" "media_live_bucket_acl" {
-  bucket = aws_s3_bucket.media_live_bucket.id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket" "media_convert_bucket" {
-  bucket        = var.media_convert_bucket_name
-  force_destroy = true
-}
-
-resource "aws_s3_bucket_acl" "media_convert_bucket_acl" {
-  bucket = aws_s3_bucket.media_convert_bucket.id
-  acl    = "private"
 }
 
 resource "aws_eip" "nat" {

@@ -83,7 +83,7 @@ variable "media_live_bucket_name" {
 }
 
 variable "media_convert_bucket_name" {
-  description = "Media Convert S3 bucket name"
+  description = "Media Convert S3 bucket name for output"
   type        = string
   default     = ""
 }
