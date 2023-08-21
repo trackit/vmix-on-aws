@@ -351,10 +351,10 @@ To perform the VOD deployment, follow these steps:
 
     ```bash
     terraform plan \
-      -var="input_security_group=4642276" \
+      -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" \
       -var="create_bucket=true" \
-      -var="media_live_bucket_name=media-live-vmix-archive" \
-      -var="media_convert_bucket_name=media-convert-vmix-out" \
+      -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" \
+      -var="media_convert_bucket_name={DESIRED-MEDIA-CONVERT-BUCKET-NAME}" \
       -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
       -out=plan.out && \
       terraform apply plan.out
@@ -364,10 +364,10 @@ To perform the VOD deployment, follow these steps:
 
     ```bash
     terraform plan \
-      -var="input_security_group=4642276" \
+      -var="input_security_group={YOUR-INPUT-SECGROUP-ID}" \
       -var="create_bucket=true" \
-      -var="media_live_bucket_name=media-live-vmix-archive" \
-      -var="media_convert_bucket_name=media-convert-vmix-out" \
+      -var="media_live_bucket_name={DESIRED-MEDIA-LIVE-BUCKET-NAME}" \
+      -var="media_convert_bucket_name={DESIRED-MEDIA-CONVERT-BUCKET-NAME}" \
       -var="media_convert_endpoint={YOUR-MEDIA-CONVERT-ENDPOINT}" \
       -var="using_cloudfront=true" \
       -var="cloudfront_live_domain={YOUR-CLOUDFRONT-DOMAIN}" \
