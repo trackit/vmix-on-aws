@@ -25,6 +25,7 @@ Running vMix software on the cloud
             </ul>
           <li><a href="#video-on-demand-configuration">Video On Demand Configuration</a></li>
         </ul>
+        <li><a href="#destroy-the-deployment">Destroy the deployment</a></li>
     </li>
     <li><a href="#remote-accessing-the-instance">Remote accessing the vMix Instance</a></li>
     <li><a href="#-streaming-remote-cameras-and-desktop">Streaming Remote Devices</a></li>
