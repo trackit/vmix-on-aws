@@ -35,8 +35,15 @@ Running vMix software on the cloud
 
 # Getting started
 
-This guide provides step-by-step instructions for deploying a vMix environment utilizing Terraform infrastructure as code. To learn more about vMix, visit their official website: https://www.vmix.com/software/.  
-By following this guide, you will set up the following resources and applications with default configurations:
+This guide provides step-by-step instructions for deploying a vMix environment utilizing Terraform infrastructure as code.  
+vMix is a professional live video production and streaming software that allows users to mix multiple video sources, apply transitions and effects, add graphics, and stream live to various platforms.  
+It serves as a versatile and feature-rich live video production software, facilitating the creation of professional live productions. 
+
+To learn more about vMix, visit their official website: https://www.vmix.com/software/.  
+
+Also check this [video](https://www.youtube.com/watch?v=IiLbqxYj_DI) about the vMix and the infrastructure discussed here.
+
+**By following this guide, you will set up the following resources and applications with default configurations:**
 
 ## Network
 
